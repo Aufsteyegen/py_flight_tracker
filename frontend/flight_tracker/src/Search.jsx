@@ -5,20 +5,20 @@ export default function Search({ showIATA, setShowIATA,
                                  arrival, setArrival,
                                  airline, setAirline,
                                  flightNumber, setFlightNumber,
-                                 date, setDate,
-                                 fetch, setFetch }) {
+                                 fetch, setFetch,
+                                 tail, setTail }) {
     return (
         <div>
         {!fetch && (
             <div>
-                <div className="text-3xl mb-2">Search flights</div>
+                <div className="text-3xl mb-2">Track live and upcoming flights</div>
                 Search by
                 <div className="flex mb-2 flex-start text-sm border border-electric rounded-xl max-w-fit">
                     <button onClick={() => setShowIATA(!showIATA)} className={`mr-2 rounded-xl px-2 py-1 ${showIATA ? 'bg-green-600 font-bold shadow-lg' : 'bg-transparent'}`}>Airports</button>
                     <button onClick={() => setShowIATA(!showIATA)} className={`rounded-xl px-2 py-1 ${showIATA ? 'bg-transparent' : 'bg-green-600 font-bold shadow-lg'}`}>Flight</button>
                 </div>
-                <form className="flex items-center justify-center border border-electric rounded-xl bg-transparent">
-                    <div id="main-input" className="flex-col max-w-min justify-center flex rounded-xl py-3 px-3">
+                <form className="flex items-center justify-evenly border border-electric rounded-xl bg-transparent">
+                    <div id="main-input" className="flex-col max-w-min justify-center flex rounded-xl py-3 px-4">
                     <div className="flex">
                     {showIATA && (
                     <>
@@ -38,7 +38,7 @@ export default function Search({ showIATA, setShowIATA,
                         </div>
 
                         <div>
-                            <div className="mb-2 font-bold text-white">Arrival code:</div>
+                            <div className="mb-2 font-bold text-white">IATA arrival code:</div>
                             <input  className="font-bold h-14 tr-bg text-white 
                                             placeholder-gray-300 py-3 pl-3 mr-4 
                                             border bg-black border-electric 
@@ -49,6 +49,7 @@ export default function Search({ showIATA, setShowIATA,
                                     onChange={(e) => {e.target.value.length <= 3 ? setArrival(e.target.value.toUpperCase()) : null}}
                                     required/>
                         </div>
+
                     </>
                     )}
                     {!showIATA && (
@@ -84,16 +85,18 @@ export default function Search({ showIATA, setShowIATA,
                             </div>
                         </>
                     )}
+
                     <div>
-                        <div className="mb-2 font-bold text-white">Date (optional):</div>
+                        <div className="mb-2 font-bold text-white">Tail number (optional):</div>
                         <input  className="font-bold h-14 tr-bg text-white 
-                                        placeholder-gray-300 py-3 pl-3 border 
-                                        bg-black border-electric w-40 
-                                        rounded-xl" name="flight-num" 
-                                type="date"
-                                value={date}
-                                onChange={(e) => setDate(e.target.value)}
-                                placeholder="Date"/>
+                                        placeholder-gray-300 py-3 pl-3
+                                        border bg-black border-electric 
+                                        w-40 rounded-xl" name="flight-num" 
+                                type="text" 
+                                placeholder="Example: N801AC"
+                                value={tail}
+                                onChange={(e) => {e.target.value.length <= 8 ? setTail(e.target.value.toUpperCase()) : null}}
+                                required/>
                     </div>
                     </div>
                     </div>
