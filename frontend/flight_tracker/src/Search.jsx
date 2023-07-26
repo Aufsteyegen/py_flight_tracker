@@ -1,4 +1,5 @@
-
+import axios from 'axios'
+import { useState } from 'react'
 
 export default function Search({ showIATA, setShowIATA,
                                  departure, setDeparture,
@@ -7,6 +8,21 @@ export default function Search({ showIATA, setShowIATA,
                                  flightNumber, setFlightNumber,
                                  fetch, setFetch,
                                  tail, setTail }) {
+    const [data, setData] = useState(null)
+    async function handleSubmit(e) {
+        e.preventDefault()
+        const data = {
+            departure: departure,
+            arrival: arrival,
+            tail: tail,
+            airline: airline,
+            flight_number: flightNumber
+        }
+        const returnVals = await axios.get('http://127.0.0.1:8000/api/flights/', { params: data })
+        console.log(returnVals)
+        setData(returnVals)
+        }
+    
     return (
         <div>
         {!fetch && (
@@ -17,8 +33,8 @@ export default function Search({ showIATA, setShowIATA,
                     <button onClick={() => setShowIATA(!showIATA)} className={`mr-2 rounded-xl px-2 py-1 ${showIATA ? 'bg-green-600 font-bold shadow-lg' : 'bg-transparent'}`}>Airports</button>
                     <button onClick={() => setShowIATA(!showIATA)} className={`rounded-xl px-2 py-1 ${showIATA ? 'bg-transparent' : 'bg-green-600 font-bold shadow-lg'}`}>Flight</button>
                 </div>
-                <form className="flex items-center justify-evenly border border-electric rounded-xl bg-transparent">
-                    <div id="main-input" className="flex-col max-w-min justify-center flex rounded-xl py-3 px-4">
+                <form onSubmit={handleSubmit} className="flex items-center justify-evenly border border-electric rounded-xl bg-transparent">
+                    <div id="main-input" className="flex-col max-w-min justify-center flex rounded-xl py-3 px-6">
                     <div className="flex">
                     {showIATA && (
                     <>
@@ -27,7 +43,7 @@ export default function Search({ showIATA, setShowIATA,
                             <input className="font-Inter h-14 font-bold tr-bg 
                                             text-white placeholder-gray-300 
                                             py-3 pl-3 mr-4 border bg-black 
-                                            border-electric w-40 rounded-xl" 
+                                            border-electric w-44 rounded-xl" 
                                     type="text" 
                                     placeholder="Example: LAX" 
                                     value={departure}
@@ -42,7 +58,7 @@ export default function Search({ showIATA, setShowIATA,
                             <input  className="font-bold h-14 tr-bg text-white 
                                             placeholder-gray-300 py-3 pl-3 mr-4 
                                             border bg-black border-electric 
-                                            w-40 rounded-xl" name="flight-num" 
+                                            w-44 rounded-xl" name="flight-num" 
                                     type="text" 
                                     placeholder="Example: JFK"
                                     value={arrival}
@@ -59,7 +75,7 @@ export default function Search({ showIATA, setShowIATA,
                             <input  className="font-Inter h-14 font-bold tr-bg 
                                             text-white placeholder-gray-300 
                                             py-3 pl-3 mr-4 border bg-black 
-                                            border-electric w-40 rounded-xl" 
+                                            border-electric w-44 rounded-xl" 
                                     name="flight-num" type="text" 
                                     placeholder="Example: DAL" 
                                     value={airline}
@@ -74,7 +90,7 @@ export default function Search({ showIATA, setShowIATA,
                             <input  className="font-Inter h-14 font-bold tr-bg 
                                             text-white placeholder-gray-300 py-3 
                                             pl-3 mr-4 border bg-black 
-                                            border-electric w-40 rounded-xl" 
+                                            border-electric w-44 rounded-xl" 
                                     name="flight-num" type="text" 
                                     placeholder="Example: 2382"
                                     value={flightNumber}
@@ -91,7 +107,7 @@ export default function Search({ showIATA, setShowIATA,
                         <input  className="font-bold h-14 tr-bg text-white 
                                         placeholder-gray-300 py-3 pl-3
                                         border bg-black border-electric 
-                                        w-40 rounded-xl" name="flight-num" 
+                                        w-44 rounded-xl" name="flight-num" 
                                 type="text" 
                                 placeholder="Example: N801AC"
                                 value={tail}
@@ -100,7 +116,7 @@ export default function Search({ showIATA, setShowIATA,
                     </div>
                     </div>
                     </div>
-                    <button className="mx-2 bg-transparent rounded-xl h-14 my-3 "><i className='bx bx-search bx-md' ></i></button>
+                    <button onClick={handleSubmit} className="search-btn rounded-xl py-3"><i className='bx bx-search bx-lg flex' ></i></button>
                 </form>
                 <div className="border-b border-electric my-5"></div>
             </div>

@@ -29,8 +29,26 @@ button:hover {
     transition: border-color 0.15s;
 }
 
+i {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
 i:hover {
     color: rgb(0, 200, 255);
+}
+
+.search-btn {
+    background: linear-gradient(180deg, #007FFF 0%, #0072E5 100%);
+    width: 30%;
+    height: 112px;
+}
+
+.search-btn:hover {
+    background: linear-gradient(180deg, #007FFF 0%, #288ef4 100%);
 }
 
 :root {
