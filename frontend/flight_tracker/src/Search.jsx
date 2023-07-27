@@ -1,4 +1,5 @@
 import axios from 'axios'
+import FlightCard from './FlightCard'
 import { useState } from 'react'
 
 export default function Search({ showIATA, setShowIATA,
@@ -6,7 +7,7 @@ export default function Search({ showIATA, setShowIATA,
                                  arrival, setArrival,
                                  airline, setAirline,
                                  flightNumber, setFlightNumber,
-                                 fetch, setFetch,
+                                 fetched, setFetched,
                                  tail, setTail }) {
     const [data, setData] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -24,26 +25,42 @@ export default function Search({ showIATA, setShowIATA,
             setLoading(true)
             const returnVals = await axios.get('http://127.0.0.1:8000/api/flights/', { params: data })
             console.log(returnVals)
-            setData(returnVals)
+            setData(returnVals.data)
+            setFetched(true)
+            setLoading(false)
         } catch (error) {
-            setError(error)
+            console.log(error)
+            setError(error.message)
         }
+        }
+        function resetSearch() {
+            setLoading(false)
+            setError('')
+        }
+
         
-        }
     return (
         <div>
         
             <div>
                 <div className="text-3xl mb-2">Track live and upcoming flights</div>
-                {loading && (
-                    <div id="main-input" className="flex items-center justify-evenly 
-                                                    border border-electric 
-                                                    rounded-xl bg-transparent h-24"
+                {fetched && !loading && (
+                    <div><FlightCard data={data} departure={departure}
+                                     arrival={arrival} /></div>
+                )}
+                {(loading && !error && !fetched) && (
+                    <div className="flex text-3xl font-bold py-8"
                                         >Loading...
                     </div>
                 )}
+                {error && (
+                    <div className="flex flex-col py-8">
+                        <div className="text-3xl">An error occurred: <span className="font-bold">{error}</span></div>
+                        <div><button onClick={resetSearch} className="border border-electric rounded-xl px-2 py-1 mr-2 mt-3">Try again?</button></div>
+                    </div>
+                )}
 
-                {!loading && (
+                {(!loading && !fetched) && (
                 <form onSubmit={handleSubmit} className="flex items-center justify-evenly border border-electric rounded-xl bg-transparent">
                     <div id="main-input" className="flex-col max-w-min justify-center flex rounded-xl py-3 px-6">
                     <div className="flex">

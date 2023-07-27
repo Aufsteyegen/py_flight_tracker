@@ -14,7 +14,7 @@ export default function Homepage({ authenticated }) {
 
     const [tail, setTail] = useState("")
 
-    const [fetch, setFetch] = useState(false)
+    const [fetched, setFetched] = useState(false)
     return (
         <div className="max-w-min flex flex-col justify-center border-electric">
             <div className="flex">
@@ -27,7 +27,7 @@ export default function Homepage({ authenticated }) {
                 airline={airline} setAirline={setAirline}
                 flightNumber={flightNumber} setFlightNumber={setFlightNumber}
                 showIATA={showIATA} setShowIATA={setShowIATA}
-                fetch={fetch} setFetch={setFetch}
+                fetched={fetched} setFetched={setFetched}
                 tail={tail} setTail={setTail} />
         <div className="text-3xl mb-2">Journal</div>
         <div className="mb-5"><h2>View and log your past flights.</h2></div>
