@@ -3,15 +3,14 @@ import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loade
 import './mapbox-gl.css'
 import { useRef, useState, useEffect } from 'react'
 
-
 mapboxgl.accessToken = import.meta.env.VITE_mapboxglAccessToken
 
 export default function Journal({ authenticated }) {
-    const mapContainer = useRef(null);
-    const map = useRef(null);
-    const [lng, setLng] = useState(-70.9);
-    const [lat, setLat] = useState(42.35);
-    const [zoom, setZoom] = useState(2.5);
+    const mapContainer = useRef(null)
+    const map = useRef(null)
+    const [lng, setLng] = useState(-96)
+    const [lat, setLat] = useState(37.8)
+    const [zoom, setZoom] = useState(2.5)
     useEffect(() => {
         if (map.current) return
         map.current = new mapboxgl.Map({

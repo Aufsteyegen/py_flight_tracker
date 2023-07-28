@@ -4,6 +4,14 @@ from django.http import HttpResponseServerError
 from FlightRadar24 import FlightRadar24API
 
 def flightradar_api(request):
+    """
+    Function to handle HTTP GET request from FlightCard.jsx frontend,
+    return flight data from FlightRadar24 API. Returns 404 error if
+    no flight data is found.
+
+    Input: HTTP request 
+    Output: HTTP JsonResponse  
+    """
     if request.method == 'GET':
         airline = request.GET.get('airline')
         flight_number = request.GET.get('flight_number')
@@ -24,6 +32,9 @@ def flightradar_api(request):
     print(flight)
     if flight != None:
         flight_details = fr_api.get_flight_details(flight)
+        print(flight_details)
+        trail = get_flight_coords(flight_details['trail'])
+
         #convert flight time to readable format
         flighttime_seconds = int(flight_details['time']['historical'].get('flighttime', 0))
         flighttime_hours, flighttime_minutes = divmod(flighttime_seconds, 3600)
@@ -39,10 +50,34 @@ def flightradar_api(request):
             'heading': flight_details['trail'][0].get('hd', None),
             'speed': flight_details['trail'][0].get('spd', None),
             'flight_time': (flighttime_hours, flighttime_minutes),
-            'image': flight_details['aircraft']['images']['medium'][0].get('src', None)
+            'trail' : trail,
+            'origin_stats': flight_details['airport']['origin'].get('position', None),
+            'destination_stats': flight_details['airport']['destination'].get('position', None),
+            'image': flight_details['aircraft']['images']['medium'][0].get('src', None),
+            'image_credit': flight_details['aircraft']['images']['medium'][0].get('copyright', None),
+            'icon_color': flight_details['status'].get('icon', None)
         }
     else:
         flight_data = {'message' : 'Flight not found.',
                        'error_code': 404}
         return HttpResponseServerError(json.dumps(flight_data), content_type='application/json')
     return JsonResponse(flight_data)
+
+def get_flight_coords(trail):
+    """
+    Helper function to unpack trail coordinates for a given flight.
+
+    Input: Dictionary of coordinates
+    Output: Nested list of [lat, lng]
+    """
+    output = []
+    output_idx = 0
+    for data in trail:
+        coordinates = []
+        lat = data['lat']
+        lng = data['lng']
+        coordinates.append(lng)
+        coordinates.append(lat)
+        output.append(coordinates)
+        output_idx += 1
+    return output
