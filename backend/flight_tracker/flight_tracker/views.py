@@ -1,16 +1,20 @@
 from django.http import JsonResponse
 import json
+import time
 from django.http import HttpResponseServerError
+from geopy import distance
 from FlightRadar24 import FlightRadar24API
 
 def flightradar_api(request):
     """
-    Function to handle HTTP GET request from FlightCard.jsx frontend,
+    Handles HTTP GET request from FlightCard.jsx frontend,
     return flight data from FlightRadar24 API. Returns 404 error if
     no flight data is found.
 
-    Input: HTTP request 
-    Output: HTTP JsonResponse  
+    Parameters:
+        request: HTTP request 
+    Returns:
+        HTTP JsonResponse object
     """
     if request.method == 'GET':
         airline = request.GET.get('airline')
@@ -29,7 +33,7 @@ def flightradar_api(request):
             flight = airline_flight
 
     # get flight details
-    print(flight)
+    # print(flight)
     if flight != None:
         flight_details = fr_api.get_flight_details(flight)
         print(flight_details)
@@ -39,6 +43,17 @@ def flightradar_api(request):
         flighttime_seconds = int(flight_details['time']['historical'].get('flighttime', 0))
         flighttime_hours, flighttime_minutes = divmod(flighttime_seconds, 3600)
         flighttime_minutes //= 60
+
+        # timestamp; when this data was retrieved
+        timestamp = time.time()
+        formatted_time = time.strftime('%H:%M', time.localtime(timestamp))
+
+        origin_coordinates = (flight_details['airport']['origin']['position'].get('latitude', 0),
+                             flight_details['airport']['origin']['position'].get('longitude', 0))
+        destination_coordinates = (flight_details['airport']['origin']['position'].get('latitude', 0),
+                                  flight_details['airport']['destination']['position'].get('longitude', 0))
+            
+        flight_distance = int(distance.great_circle(origin_coordinates, destination_coordinates).miles)
 
         flight_data = {
             'callsign': flight_details['identification'].get('callsign', None),
@@ -55,7 +70,9 @@ def flightradar_api(request):
             'destination_stats': flight_details['airport']['destination'].get('position', None),
             'image': flight_details['aircraft']['images']['medium'][0].get('src', None),
             'image_credit': flight_details['aircraft']['images']['medium'][0].get('copyright', None),
-            'icon_color': flight_details['status'].get('icon', None)
+            'icon_color': flight_details['status'].get('icon', None),
+            'updated' : formatted_time,
+            'flight_distance' : flight_distance
         }
     else:
         flight_data = {'message' : 'Flight not found.',
@@ -65,10 +82,12 @@ def flightradar_api(request):
 
 def get_flight_coords(trail):
     """
-    Helper function to unpack trail coordinates for a given flight.
+    Unpacks trail coordinates for a given flight.
 
-    Input: Dictionary of coordinates
-    Output: Nested list of [lat, lng]
+    Parameters:
+        trail: Dictionary of coordinates
+    Returns: 
+        Nested list of [lat, lng]
     """
     output = []
     output_idx = 0
@@ -81,3 +100,6 @@ def get_flight_coords(trail):
         output.append(coordinates)
         output_idx += 1
     return output
+
+
+

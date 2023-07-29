@@ -2,14 +2,15 @@ import axios from 'axios'
 import FlightCard from './FlightCard'
 import { useState } from 'react'
 
-export default function Search({ showIATA, setShowIATA,
+export default function Search({ 
                                  departure, setDeparture,
                                  arrival, setArrival,
                                  airline, setAirline,
                                  flightNumber, setFlightNumber,
                                  fetched, setFetched,
-                                 tail, setTail }) {
-    const [data, setData] = useState(null)
+                                 tail, setTail, authenticated,
+                                 journal, setJournal }) {
+    const [data, setData] = useState({})
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     async function handleSubmit(e) {
@@ -17,12 +18,14 @@ export default function Search({ showIATA, setShowIATA,
         const data = {
             departure: departure,
             arrival: arrival,
-            tail: tail,
             airline: airline,
             flight_number: flightNumber
         }
+        if (departure == "" || arrival == "" || airline == "" || flightNumber == "") return
         try {
             setLoading(true)
+            setFetched(false)
+            setData({})
             const returnVals = await axios.get('http://127.0.0.1:8000/api/flights/', { params: data })
             console.log(returnVals)
             setData(returnVals.data)
@@ -30,15 +33,15 @@ export default function Search({ showIATA, setShowIATA,
             setLoading(false)
         } catch (error) {
             console.log(error)
-            setError(error.message)
+            if (error.response.status == 500) setError("Flight not found")
+            else setError(error.message)
         }
-        }
-        function resetSearch() {
-            setLoading(false)
-            setError('')
-        }
-
-        
+    }
+    function resetSearch() {
+        setLoading(false)
+        setData({})
+        setError('')
+    }
     return (
         <div>
         
@@ -46,17 +49,26 @@ export default function Search({ showIATA, setShowIATA,
                 <div className="text-3xl mb-2">Track live and upcoming flights</div>
                 {fetched && !loading && (
                     <div><FlightCard data={data} departure={departure}
-                                     arrival={arrival} /></div>
+                                     arrival={arrival} authenticated={authenticated}
+                                     refresh={handleSubmit}
+                                     setLoading={setLoading}
+                                     journal={journal} setJournal={setJournal}
+                        />
+                    </div>
                 )}
                 {(loading && !error && !fetched) && (
                     <div className="flex text-3xl font-bold py-8"
-                                        >Loading...
+                                        >Loading flight data...
                     </div>
                 )}
                 {error && (
                     <div className="flex flex-col py-8">
                         <div className="text-3xl">An error occurred: <span className="font-bold">{error}</span></div>
-                        <div><button onClick={resetSearch} className="border border-electric rounded-xl px-2 py-1 mr-2 mt-3">Try again?</button></div>
+                        <div className="flex">
+                        <div>
+                            <button onClick={resetSearch} className="border border-electric rounded-xl px-2 py-1 mr-2 mt-3">New search</button>
+                            <button className="border border-electric rounded-xl px-2 py-1 mr-2 mt-3">Log manually</button></div>
+                        </div>
                     </div>
                 )}
 

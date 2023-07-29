@@ -27,8 +27,7 @@ export default function Journal({ authenticated }) {
             <div className="mb-2 flex justify-between">
                 <div>Your data may be erased. Sign in to save it.</div>
                 <div>
-                <button className="border border-electric rounded-xl px-2 py-1 mr-2 font-bold">Log a flight</button>
-                <button className="border border-electric rounded-xl px-2 py-1 mr-2">Hide map</button>
+                <button className="border border-electric rounded-xl px-2 py-1 font-bold">Log a flight</button>
                 </div>
             </div>
         )}

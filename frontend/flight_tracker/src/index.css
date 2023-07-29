@@ -29,6 +29,10 @@ button:hover {
     transition: border-color 0.15s;
 }
 
+#disabled:hover {
+    border-color: gray;
+}
+
 i {
     display: flex;
     justify-content: center;
@@ -37,7 +41,17 @@ i {
     height: 100%;
 }
 
-i:hover {
+.bx-refresh,
+.bxs-bell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.bx-refresh:hover {
     color: rgb(0, 200, 255);
 }
 
@@ -49,6 +63,7 @@ i:hover {
 
 .search-btn:hover {
     background: linear-gradient(180deg, #007FFF 0%, #288ef4 100%);
+    color: rgb(0, 200, 255);
 }
 
 :root {
