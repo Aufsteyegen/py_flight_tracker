@@ -6,13 +6,18 @@ import './index.css'
 mapboxgl.accessToken = import.meta.env.VITE_mapboxglAccessToken
 
 
-export default function FlightCard({ data, departure, arrival, refresh,
-                                     setLoading, authenticated, journal, setJournal }) {
+export default function FlightCard({ data, departure, arrival, refresh, 
+                                     setLoading, authenticated, journal, setJournal,
+                                     inJournal, setInJournal }) {
     const mapContainer2 = useRef(null)
     const map = useRef(null)
     const [lng, setLng] = useState(data.trail[0][0])
     const [lat, setLat] = useState(data.trail[0][1])
     const [zoom, setZoom] = useState(6)
+    const currentDate = new Date()
+    const month = currentDate.getMonth() + 1
+    const day = currentDate.getDate()
+    const year = currentDate.getFullYear()
     function updateJournal(e) {
         e.preventDefault()
         const journalItem = {
@@ -23,10 +28,29 @@ export default function FlightCard({ data, departure, arrival, refresh,
             flight_time : [data.flight_time[0], data.flight_time[1]],
             origin_coordinates : [data.origin_stats.longitude, data.origin_stats.latitude],
             destination_coordinates : [data.destination_stats.longitude, data.destination_stats.latitude],
-            distance: data.flight_distance
+            distance: data.flight_distance,
+            month: month,
+            day: day, 
+            year: year,
+            id: data.id
         }
-        console.log(journalItem)
+        const flightExists = journal.some((obj) => (obj.callsign == data.callsign && 
+                                                    obj.date == currentDate &&
+                                                    obj.tail == data.tail))
+        if (flightExists) {
+            setInJournal(true) 
+            return
+        }
+        setJournal(prevJournal => [...prevJournal, journalItem])
+        const json_journal = JSON.stringify(journal)
+        localStorage.setItem('sky_journal_journal', json_journal)
     }
+    useEffect(() => {
+        journal.map((item) => {
+            if (item.id == data.id) {setInJournal(true), console.log('worked')}
+            else setInJournal(false)
+        })
+    }, [journal])
 
     useEffect(() => {
         if (!map.current) {
@@ -158,12 +182,22 @@ export default function FlightCard({ data, departure, arrival, refresh,
                         </div>
                         <div className="flex">
                             <div className="mt-3 mr-3 flex items-center">Last updated: {data.updated} UTC</div>
-                            <button title="Add flight to log" 
-                                    className="flex justify-items-start border 
-                                             border-electric rounded-xl mr-2 
-                                               mt-3 h-7 px-2 font-bold"
-                                    onClick={updateJournal}>+
-                            </button>
+                            {!inJournal &&  (
+                                <button title="Add flight to log" 
+                                        className="flex justify-items-start border 
+                                                border-electric rounded-xl mr-2 
+                                                mt-3 h-7 px-2 font-bold"
+                                        onClick={updateJournal}>+
+                                </button>
+                            )}
+                            {inJournal &&  (
+                                <button title="Flight already logged" onClick={refresh} 
+                                id="disabled" className="flex items-center border 
+                                border-gray-500 rounded-xl mr-2 
+                                           mt-3 h-7 " disabled>
+                                    <i className='bx bx-check bx-xs'></i>
+                                </button>
+                            )}
                             <button title="Refresh flight data" onClick={refresh} 
                                     className="flex items-center border 
                                              border-electric rounded-xl mr-2 

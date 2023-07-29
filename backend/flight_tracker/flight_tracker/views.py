@@ -72,6 +72,7 @@ def flightradar_api(request):
             'image_credit': flight_details['aircraft']['images']['medium'][0].get('copyright', None),
             'icon_color': flight_details['status'].get('icon', None),
             'updated' : formatted_time,
+            'id' : flight_details['identification'].get('id', None),
             'flight_distance' : flight_distance
         }
     else:

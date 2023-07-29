@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from 'react'
 
 mapboxgl.accessToken = import.meta.env.VITE_mapboxglAccessToken
 
-export default function Journal({ authenticated }) {
+export default function Journal({ authenticated, journal, setJournal }) {
     const mapContainer = useRef(null)
     const map = useRef(null)
     const [lng, setLng] = useState(-96)
@@ -19,7 +19,19 @@ export default function Journal({ authenticated }) {
         center: [lng, lat],
         zoom: zoom
         })
-    })
+    }, [journal])
+    useEffect(() => {
+        const local_journal = localStorage.getItem('sky_journal_journal')
+        if (local_journal == null) {
+            const empty_journal = JSON.stringify([])
+            localStorage.setItem('sky_journal_journal', empty_journal)
+        }
+        else {
+            const parsed_journal = JSON.parse(local_journal)
+            setJournal(parsed_journal)
+        }
+        console.log(journal)
+    }, [])
     return (
         <div>
         {!authenticated && (

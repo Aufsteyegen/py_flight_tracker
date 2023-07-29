@@ -9,7 +9,7 @@ export default function Search({
                                  flightNumber, setFlightNumber,
                                  fetched, setFetched,
                                  tail, setTail, authenticated,
-                                 journal, setJournal }) {
+                                 journal, setJournal, inJournal, setInJournal }) {
     const [data, setData] = useState({})
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
@@ -52,6 +52,7 @@ export default function Search({
                                      arrival={arrival} authenticated={authenticated}
                                      refresh={handleSubmit}
                                      setLoading={setLoading}
+                                     setInJournal={setInJournal} inJournal={inJournal}
                                      journal={journal} setJournal={setJournal}
                         />
                     </div>

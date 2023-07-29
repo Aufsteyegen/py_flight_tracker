@@ -12,7 +12,8 @@ export default function Homepage({ authenticated }) {
 
     const [tail, setTail] = useState("")
 
-    const [journal, setJournal] = useState("")
+    const [journal, setJournal] = useState([])
+    const [inJournal, setInJournal] = useState(false)
 
     const [fetched, setFetched] = useState(false)
     return (
@@ -29,10 +30,11 @@ export default function Homepage({ authenticated }) {
                 fetched={fetched} setFetched={setFetched}
                 tail={tail} setTail={setTail} 
                 journal={journal} setJournal={setJournal}
+                inJournal={inJournal} setInJournal={setInJournal}
             />
         <div className="text-3xl mb-2">Journal</div>
         <div className="mb-5"><h2>View and log your past flights.</h2></div>
-        <Journal authenticated={authenticated} />
+        <Journal authenticated={authenticated} journal={journal} setJournal={setJournal}/>
         </div>
     )
 }
