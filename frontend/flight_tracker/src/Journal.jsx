@@ -1,6 +1,7 @@
 
 import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import './mapbox-gl.css'
+import JournalCard from './JournalCard'
 import { useRef, useState, useEffect } from 'react'
 
 mapboxgl.accessToken = import.meta.env.VITE_mapboxglAccessToken
@@ -19,11 +20,27 @@ function generateLine(destination, arrival) {
 }
 
 export default function Journal({ authenticated, journal, setJournal }) {
+    const [flightHours, setFlightHours] = useState(0)
+    const [flightMiles, setFlightMiles] = useState(0)
+    console.log(journal)
     const mapContainer = useRef(null)
     const map = useRef(null)
     const [lng, setLng] = useState(-96)
     const [lat, setLat] = useState(37.8)
-    const [zoom, setZoom] = useState(2.5)            
+    const [zoom, setZoom] = useState(2.5)  
+    useEffect(() => {
+        let newTotalHours = 0
+        let newTotalMiles = 0
+        journal.map((flight) => {
+            const totalMinutes = (flight.flight_time[0] * 60) + flight.flight_time[1]
+            newTotalHours += (totalMinutes / 60) + flightHours
+            newTotalMiles += flight.distance
+        })
+        newTotalHours = parseFloat(newTotalHours.toFixed(2))
+        setFlightHours(newTotalHours)
+        setFlightMiles(newTotalMiles)
+    }, [journal])
+    
     useEffect(() => {
         const features = journal.map((obj) => generateLine(obj.destination_coordinates, obj.origin_coordinates));
         console.log(features)
@@ -52,6 +69,7 @@ export default function Journal({ authenticated, journal, setJournal }) {
               layout: {},
               paint: {
                 'line-color': '#00C000',
+                'line-width': 2
               },
             })
           })
@@ -67,7 +85,7 @@ export default function Journal({ authenticated, journal, setJournal }) {
             }
           }, 100)
         }
-      }, [journal, lng, lat, zoom])
+      }, [journal])
     
     useEffect(() => {
         const local_journal = localStorage.getItem('sky_journal_journal')
@@ -86,35 +104,20 @@ export default function Journal({ authenticated, journal, setJournal }) {
                 </div>
             </div>
         )}
-        <div className="mb-5 max-h-72 overflow-y-scroll grid grid-cols-2 gap-4">
-            {journal.map((item, key) => {
+        <div className="mb-5 max-h-80 overflow-y-scroll grid grid-cols-2 gap-4 border-b border-electric">
+            {journal.length === 0 && (
+                <div className="mb-5">You've logged no flights.</div>
+            )}
+            {journal.map((item, index) => {
                 return (
-                <div className="bg-black border border-electric rounded-xl p-3 flex mb-2 shadow-2xl" key={key}>
-                    <div className="flex flex-col w-full">
-                        <div className="flex">
-                            <div className="text-3xl font-bold mr-3">{item.callsign}</div>
-                            <div className="text-3xl">{item.departure}–{item.arrival}</div>
-                        </div>
-                        <div className="flex">
-                            <div className="text-2xl mr-3">{item.aircraft}</div>
-                            <div className="text-2xl">{item.tail}</div>
-                            
-                        </div>
-                        <div className="flex mt-3 justify-between">
-                            <div className="flex">
-                                <div className="mr-3">{item.distance} mi</div>
-                                <div>{item.flight_time[0]}h{item.flight_time[1]}m</div>
-                            </div>
-                            <div>{item.month}/{item.day}/{item.year}</div>
-                        </div>
-                    </div>
-                </div>
-                )
+                <JournalCard item={item} key={index} />
+            )
             })}
         </div>
         <div className="flex text-2xl mb-3">
-            <div className="mr-7">Hours flown:</div>
-            <div>Distance flown:</div>
+            <div><span className="font-bold">{flightHours}</span> hours,  
+                <span className="font-bold"> {flightMiles}</span> miles flown over 
+                <span className="font-bold"> {journal.length}</span> {journal.length != 1 ? 'flights' : 'flight'}</div>
         </div>
         <div ref={mapContainer} className="map cursor-grab"></div>
         </div>

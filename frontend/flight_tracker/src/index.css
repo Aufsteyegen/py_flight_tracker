@@ -43,7 +43,8 @@ i {
 
 .bx-refresh,
 .bx-check,
-.bxs-bell {
+.bxs-bell,
+.bx-x {
     display: flex;
     align-items: center;
     justify-content: center;

@@ -7,7 +7,7 @@ function App() {
     const [authenticated, setAuthenticated] = useState(false)
   return (
     <div id="app-bg" className="w-screen h-screen flex items-center flex-col overflow-scroll">
-        <Navbar />
+        <Navbar authenticated={authenticated} setAuthenticated={setAuthenticated}/>
         <Homepage authenticated={authenticated}/>
     </div>
   )

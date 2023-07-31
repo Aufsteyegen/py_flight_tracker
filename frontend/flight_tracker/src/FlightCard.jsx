@@ -78,7 +78,7 @@ export default function FlightCard({ data, departure, arrival, refresh,
                     'line-cap': 'round'
                     },
                     'paint': {
-                    'line-color': '#0059B2',
+                    'line-color': '#00C000',
                     'line-width': 2
                     }
                 })

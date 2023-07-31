@@ -32,8 +32,8 @@ export default function Homepage({ authenticated }) {
                 journal={journal} setJournal={setJournal}
                 inJournal={inJournal} setInJournal={setInJournal}
             />
-        <div className="text-3xl mb-2">Journal</div>
-        <div className="mb-5"><h2>View and log your past flights.</h2></div>
+        <div className="text-3xl">Journal</div>
+        <div className="mb-5 text-xl"><h2>View and log your past flights.</h2></div>
         <Journal authenticated={authenticated} journal={journal} setJournal={setJournal}/>
         </div>
     )
