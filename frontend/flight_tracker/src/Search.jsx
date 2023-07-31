@@ -32,7 +32,6 @@ export default function Search({
             setFetched(true)
             setLoading(false)
         } catch (error) {
-            console.log(error)
             if (error.response.status == 500) setError("Flight not found")
             else setError(error.message)
         }
@@ -65,6 +64,7 @@ export default function Search({
                 {error && (
                     <div className="flex flex-col py-8">
                         <div className="text-3xl">An error occurred: <span className="font-bold">{error}</span></div>
+                        {error == "Flight not found" && (<div>The flight may have landed or may not be live yet.</div>)}
                         <div className="flex">
                         <div>
                             <button onClick={resetSearch} className="border border-electric rounded-xl px-2 py-1 mr-2 mt-3">New search</button>
@@ -72,7 +72,6 @@ export default function Search({
                         </div>
                     </div>
                 )}
-
                 {(!loading && !fetched) && (
                 <form onSubmit={handleSubmit} className="flex items-center justify-evenly border border-electric rounded-xl bg-transparent">
                     <div id="main-input" className="flex-col max-w-min justify-center flex rounded-xl py-3 px-6">

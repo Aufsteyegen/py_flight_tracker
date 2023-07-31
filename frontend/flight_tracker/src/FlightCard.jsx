@@ -18,41 +18,39 @@ export default function FlightCard({ data, departure, arrival, refresh,
     const month = currentDate.getMonth() + 1
     const day = currentDate.getDate()
     const year = currentDate.getFullYear()
+    const journalItem = {
+        callsign : data.callsign,
+        departure : departure,
+        arrival : arrival,
+        tail : data.registration,
+        flight_time : [data.flight_time[0], data.flight_time[1]],
+        origin_coordinates : [data.origin_stats.longitude, data.origin_stats.latitude],
+        destination_coordinates : [data.destination_stats.longitude, data.destination_stats.latitude],
+        distance: data.flight_distance,
+        month: month,
+        day: day, 
+        year: year,
+        id: data.id,
+        aircraft: data.aircraft
+    }
     function updateJournal(e) {
         e.preventDefault()
-        const journalItem = {
-            callsign : data.callsign,
-            departure : departure,
-            arrival : arrival,
-            tail : data.registration,
-            flight_time : [data.flight_time[0], data.flight_time[1]],
-            origin_coordinates : [data.origin_stats.longitude, data.origin_stats.latitude],
-            destination_coordinates : [data.destination_stats.longitude, data.destination_stats.latitude],
-            distance: data.flight_distance,
-            month: month,
-            day: day, 
-            year: year,
-            id: data.id
-        }
-        const flightExists = journal.some((obj) => (obj.callsign == data.callsign && 
-                                                    obj.date == currentDate &&
-                                                    obj.tail == data.tail))
-        if (flightExists) {
-            setInJournal(true) 
-            return
-        }
         setJournal(prevJournal => [...prevJournal, journalItem])
-        const json_journal = JSON.stringify(journal)
-        localStorage.setItem('sky_journal_journal', json_journal)
     }
     useEffect(() => {
         journal.map((item) => {
-            if (item.id == data.id) {setInJournal(true), console.log('worked')}
+            if (item.id === data.id) {
+                setInJournal(true)
+                return
+            }
             else setInJournal(false)
         })
+        const json_journal = JSON.stringify(journal)
+        localStorage.setItem('sky_journal_journal', json_journal)
     }, [journal])
 
     useEffect(() => {
+        console.log(data.trail)
         if (!map.current) {
             map.current = new mapboxgl.Map({
                 container: mapContainer2.current,
