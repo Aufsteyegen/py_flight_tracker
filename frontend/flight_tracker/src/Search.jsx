@@ -48,7 +48,7 @@ export default function Search({
                 <div className="text-3xl">Flight tracker</div>
                 <div className="mb-5 text-xl">Track live and upcoming flights.</div>
                 {fetched && !loading && (
-                    <div><FlightCard data={data} departure={departure}
+                    <div className="max-h-min pb-7"><FlightCard data={data} departure={departure}
                                      arrival={arrival} authenticated={authenticated}
                                      refresh={handleSubmit}
                                      setLoading={setLoading}

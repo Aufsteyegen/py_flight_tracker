@@ -36,7 +36,7 @@ export default function Journal({ authenticated, journal, setJournal }) {
             newTotalHours += (totalMinutes / 60) + flightHours
             newTotalMiles += flight.distance
         })
-        newTotalHours = parseFloat(newTotalHours.toFixed(2))
+        newTotalHours = parseInt(newTotalHours)
         setFlightHours(newTotalHours)
         setFlightMiles(newTotalMiles)
     }, [journal])
@@ -99,18 +99,20 @@ export default function Journal({ authenticated, journal, setJournal }) {
         {!authenticated && (
             <div className="mb-2 flex justify-between">
                 <div>Your data may be erased. Sign in to save it.</div>
-                <div>
-                <button className="border border-electric rounded-xl px-2 py-1 font-bold">Log a flight</button>
-                </div>
             </div>
         )}
+        <div>
+                <button className="mb-2 border border-electric rounded-xl px-2 py-1 font-bold">Log a flight</button>
+        </div>
         <div className="mb-5 max-h-80 overflow-y-scroll grid grid-cols-2 gap-4 border-b border-electric">
             {journal.length === 0 && (
                 <div className="mb-5">You've logged no flights.</div>
             )}
             {journal.map((item, index) => {
                 return (
-                <JournalCard item={item} key={index} />
+                <JournalCard item={item} journal={journal} setJournal={setJournal} 
+                             key={index} 
+                />
             )
             })}
         </div>

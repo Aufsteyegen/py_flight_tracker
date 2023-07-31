@@ -155,7 +155,7 @@ export default function FlightCard({ data, departure, arrival, refresh,
     }
 
     return (
-        <div className="flex flex-col border border-electric rounded-xl bg-black pb-3 justify-between">
+        <div className="flex flex-col border border-electric rounded-xl bg-black pb-3 justify-between max-h-min">
             <div className="flex justify-between px-3 rounded-xl py-3 bg-black">
                 <div className="flex flex-col">
                     <div className="flex">

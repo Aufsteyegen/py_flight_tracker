@@ -1,6 +1,16 @@
 
 
-export default function JournalCard({ item }) {
+import { useState } from 'react'
+export default function JournalCard({ item, journal, setJournal }) {
+    const [confirmDelete, setConfirmDelete] = useState(false)
+    function handleDelete(e) {
+        e.preventDefault()
+        const newArray = journal.filter((flightItem) => flightItem.id !== item.id)
+        setJournal(newArray)
+        const json_journal = JSON.stringify(newArray)
+        localStorage.setItem('sky_journal_journal', json_journal)
+    }
+
     return (
         <div className="mb-5 bg-electric border border-electric rounded-xl p-3 flex mb-2 shadow-black shadow-md bg-opacity-20">
             <div className="flex flex-col w-full">
@@ -9,14 +19,25 @@ export default function JournalCard({ item }) {
                         <div className="text-3xl font-bold mr-3">{item.callsign}</div>
                         <div className="text-3xl">{item.departure}–{item.arrival}</div>
                     </div>
-                    
+                    {!confirmDelete && (
                     <div className="font-bold"><button title="Delete flight from log" 
                                     className="flex items-center border 
                                              border-electric rounded-xl  
-                                               h-7">
+                                               h-7" onClick={() => setConfirmDelete(true)}>
                                     <i className='bx bx-x'></i>
                         </button>
-                    </div>
+                        </div>
+                    )}
+                    {confirmDelete && (
+                    <div className="font-bold  overflow-scroll" onClick={handleDelete}><button title="Delete flight from log" 
+                                    className="flex items-center border 
+                                             border-electric rounded-xl  
+                                               h-7 px-2">
+                                    Delete?
+                        </button>
+                        </div>
+                    )}
+                    
                 </div>
                 <div className="flex">
                     <div className="text-2xl mr-3">{item.aircraft}</div>
