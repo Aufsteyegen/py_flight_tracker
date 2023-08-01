@@ -53,7 +53,8 @@ i {
     padding-right: 6px;
 }
 
-.bx-refresh:hover {
+.bx-refresh:hover,
+.bxs-bell:hover {
     color: rgb(0, 200, 255);
 }
 

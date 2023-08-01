@@ -101,6 +101,3 @@ def get_flight_coords(trail):
         output.append(coordinates)
         output_idx += 1
     return output
-
-
-

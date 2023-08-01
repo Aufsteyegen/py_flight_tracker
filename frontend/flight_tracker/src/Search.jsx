@@ -48,12 +48,14 @@ export default function Search({
                 <div className="text-3xl">Flight tracker</div>
                 <div className="mb-5 text-xl">Track live and upcoming flights.</div>
                 {fetched && !loading && (
-                    <div className="max-h-min pb-7"><FlightCard data={data} departure={departure}
-                                     arrival={arrival} authenticated={authenticated}
-                                     refresh={handleSubmit}
-                                     setLoading={setLoading}
-                                     setInJournal={setInJournal} inJournal={inJournal}
-                                     journal={journal} setJournal={setJournal}
+                    <div className="max-h-min pb-7"><FlightCard data={data} setData={setData}
+                                                                departure={departure}
+                                                                arrival={arrival} authenticated={authenticated}
+                                                                refresh={handleSubmit}
+                                                                setLoading={setLoading}
+                                                                setInJournal={setInJournal} inJournal={inJournal}
+                                                                journal={journal} setJournal={setJournal}
+                                                                setError={setError} setFetched={setFetched}
                         />
                     </div>
                 )}
@@ -74,17 +76,17 @@ export default function Search({
                     </div>
                 )}
                 {(!loading && !fetched) && (
-                <form onSubmit={handleSubmit} className="flex items-center justify-evenly border border-electric rounded-xl bg-transparent">
-                    <div id="main-input" className="flex-col max-w-min justify-center flex rounded-xl py-3 px-6">
+                <form onSubmit={handleSubmit} className="bg-electric bg-opacity-20 flex items-center justify-evenly border border-electric rounded-xl">
+                    <div className="flex-col max-w-min justify-center flex rounded-xl py-3 px-6">
                     <div className="flex">
                     <div>
-                        <div className="mb-2 font-bold text-white">Airline code:</div>
+                        <div className="mb-2 font-bold text-white">Airline code</div>
                         <input  className="font-Inter h-14 font-bold tr-bg 
-                                        text-white placeholder-gray-300 
+                                        text-white placeholder-gray-400 
                                         py-3 pl-3 mr-4 border bg-black 
                                         border-electric w-32 rounded-xl" 
                                 name="flight-num" type="text" 
-                                placeholder="Example: DAL" 
+                                placeholder="DAL" 
                                 value={airline}
                                 onChange={(e) => {e.target.value.length <= 3 ? 
                                                 setAirline(e.target.value.toUpperCase()) 
@@ -93,13 +95,13 @@ export default function Search({
                         </div>
 
                         <div>
-                            <div className="mb-2 font-bold text-white">Flight number:</div>
+                            <div className="mb-2 font-bold text-white">Flight number</div>
                             <input  className="font-Inter h-14 font-bold tr-bg 
-                                            text-white placeholder-gray-300 py-3 
+                                            text-white placeholder-gray-400 py-3 
                                             pl-3 mr-4 border bg-black 
                                             border-electric w-32 rounded-xl" 
                                     name="flight-num" type="text" 
-                                    placeholder="Example: 2382"
+                                    placeholder="985"
                                     value={flightNumber}
                                     onChange={(e) => {e.target.value.length <= 4 ? 
                                                     setFlightNumber(e.target.value) 
@@ -108,13 +110,13 @@ export default function Search({
                         </div>
                    
                         <div>
-                            <div className="mb-2 font-bold text-white">Departure code:</div>
+                            <div className="mb-2 font-bold text-white">Departure code</div>
                             <input className="font-Inter h-14 font-bold tr-bg 
-                                            text-white placeholder-gray-300 
+                                            text-white placeholder-gray-400 
                                             py-3 pl-3 mr-4 border bg-black 
                                             border-electric w-32 rounded-xl" 
                                     type="text" 
-                                    placeholder="Example: LAX" 
+                                    placeholder="JFK" 
                                     value={departure}
                                     onChange={(e) => {e.target.value.length <= 3 ? 
                                                     setDeparture(e.target.value.toUpperCase()) 
@@ -123,13 +125,13 @@ export default function Search({
                         </div>
 
                         <div>
-                            <div className="mb-2 font-bold text-white">Arrival code:</div>
+                            <div className="mb-2 font-bold text-white">Arrival code</div>
                             <input  className="font-bold h-14 tr-bg text-white 
-                                            placeholder-gray-300 py-3 pl-3 mr-4 
+                                            placeholder-gray-400 py-3 pl-3 
                                             border bg-black border-electric 
                                             w-32 rounded-xl" name="flight-num" 
                                     type="text" 
-                                    placeholder="Example: JFK"
+                                    placeholder="LAX"
                                     value={arrival}
                                     onChange={(e) => {e.target.value.length <= 3 ? setArrival(e.target.value.toUpperCase()) : null}}
                                     required/>

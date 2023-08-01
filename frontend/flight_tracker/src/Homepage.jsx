@@ -3,7 +3,8 @@ import Search from './Search'
 import Journal from './Journal'
 import { useState, useEffect } from 'react'
 
-export default function Homepage({ authenticated }) {
+export default function Homepage({ authenticated, journal, setJournal,
+                                   trackFlight, setTrackFlight }) {
     const [departure, setDeparture] = useState("")
     const [arrival, setArrival] = useState("")
 
@@ -12,7 +13,6 @@ export default function Homepage({ authenticated }) {
 
     const [tail, setTail] = useState("")
 
-    const [journal, setJournal] = useState([])
     const [inJournal, setInJournal] = useState(false)
 
     const [fetched, setFetched] = useState(false)
@@ -31,9 +31,11 @@ export default function Homepage({ authenticated }) {
                 tail={tail} setTail={setTail} 
                 journal={journal} setJournal={setJournal}
                 inJournal={inJournal} setInJournal={setInJournal}
+                authenticated={authenticated} trackFlight={trackFlight}
+                setTrackFlight={setTrackFlight}
             />
         <div className="text-3xl">Journal</div>
-        <div className="mb-5 text-xl"><h2>View and log your past flights.</h2></div>
+        <div className="mb-5 text-xl"><h2>View and log past flights.</h2></div>
         <Journal authenticated={authenticated} journal={journal} setJournal={setJournal}/>
         </div>
     )

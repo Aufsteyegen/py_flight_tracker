@@ -8,7 +8,8 @@ mapboxgl.accessToken = import.meta.env.VITE_mapboxglAccessToken
 
 export default function FlightCard({ data, departure, arrival, refresh, 
                                      setLoading, authenticated, journal, setJournal,
-                                     inJournal, setInJournal }) {
+                                     inJournal, setInJournal, setData, setError,
+                                     setFetched }) {
     const mapContainer2 = useRef(null)
     const map = useRef(null)
     const [lng, setLng] = useState(data.trail[0][0])
@@ -31,7 +32,8 @@ export default function FlightCard({ data, departure, arrival, refresh,
         day: day, 
         year: year,
         id: data.id,
-        aircraft: data.aircraft
+        aircraft: data.aircraft,
+        current_date : currentDate.toISOString()
     }
     function updateJournal(e) {
         e.preventDefault()
@@ -48,9 +50,30 @@ export default function FlightCard({ data, departure, arrival, refresh,
         const json_journal = JSON.stringify(journal)
         localStorage.setItem('sky_journal_journal', json_journal)
     }, [journal])
-
+    function resetSearch() {
+        setLoading(false)
+        setData({
+            callsign : '',
+            departure : '',
+            arrival : '',
+            trail : [[0, 0], [0, 0]],
+            tail : '',
+            flight_time : [[0, 0], [0, 0]],
+            origin_coordinates : [[0, 0], [0, 0]],
+            destination_coordinates : [[0, 0], [0, 0]],
+            origin_stats : {longitude : [0, 0], latitude : [0, 0]},
+            destination_stats : {longitude : [0, 0], latitude : [0, 0]},
+            distance: 0,
+            month: '',
+            day: '', 
+            year: '',
+            id: '',
+            aircraft: ''
+        })
+        setFetched(false)
+        setError('')
+    }
     useEffect(() => {
-        console.log(data.trail)
         if (!map.current) {
             map.current = new mapboxgl.Map({
                 container: mapContainer2.current,
@@ -209,6 +232,7 @@ export default function FlightCard({ data, departure, arrival, refresh,
                                                mt-3 h-7">
                                     <i className='bx bxs-bell bx-xs'></i>
                             </button>
+                           
                             )}
                             {!authenticated && (
                             <button id="disabled" title="Log in to get live notifications" 
@@ -218,7 +242,7 @@ export default function FlightCard({ data, departure, arrival, refresh,
                                     <i className='bx bxs-bell'></i>
                             </button>
                             )}
-                            <button title="Start new search" 
+                            <button title="Start new search" onClick={resetSearch}
                                     className="flex justify-center items-center border 
                                              border-electric rounded-xl mr-2 
                                                mt-3 h-7 px-2 font-bold text-sm">New search

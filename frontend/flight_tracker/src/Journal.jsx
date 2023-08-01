@@ -22,7 +22,6 @@ function generateLine(destination, arrival) {
 export default function Journal({ authenticated, journal, setJournal }) {
     const [flightHours, setFlightHours] = useState(0)
     const [flightMiles, setFlightMiles] = useState(0)
-    console.log(journal)
     const mapContainer = useRef(null)
     const map = useRef(null)
     const [lng, setLng] = useState(-96)
@@ -43,7 +42,6 @@ export default function Journal({ authenticated, journal, setJournal }) {
     
     useEffect(() => {
         const features = journal.map((obj) => generateLine(obj.destination_coordinates, obj.origin_coordinates));
-        console.log(features)
     
         if (!map.current) {
           map.current = new mapboxgl.Map({
