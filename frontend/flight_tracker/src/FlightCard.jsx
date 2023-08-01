@@ -12,9 +12,12 @@ export default function FlightCard({ data, departure, arrival, refresh,
                                      setFetched }) {
     const mapContainer2 = useRef(null)
     const map = useRef(null)
+    console.log(data)
+    const [notifications, setNotifications] = useState(false)
     const [lng, setLng] = useState(data.trail[0][0])
     const [lat, setLat] = useState(data.trail[0][1])
     const [zoom, setZoom] = useState(6)
+    
     const currentDate = new Date()
     const month = currentDate.getMonth() + 1
     const day = currentDate.getDate()
@@ -26,14 +29,15 @@ export default function FlightCard({ data, departure, arrival, refresh,
         tail : data.registration,
         flight_time : [data.flight_time[0], data.flight_time[1]],
         origin_coordinates : [data.origin_stats.longitude, data.origin_stats.latitude],
-        destination_coordinates : [data.destination_stats.longitude, data.destination_stats.latitude],
+        destination_coordinates : [data.destination_stats.longitude, 
+                                   data.destination_stats.latitude],
         distance: data.flight_distance,
-        month: month,
-        day: day, 
-        year: year,
         id: data.id,
         aircraft: data.aircraft,
-        current_date : currentDate.toISOString()
+        flight_date : `${month}/${day}/${year}`,
+        track : notifications,
+        live : data.live_status,
+        status_text : data.status_text
     }
     function updateJournal(e) {
         e.preventDefault()
@@ -68,7 +72,10 @@ export default function FlightCard({ data, departure, arrival, refresh,
             day: '', 
             year: '',
             id: '',
-            aircraft: ''
+            aircraft: '',
+            current_date : '',
+            live : '',
+            track : ''
         })
         setFetched(false)
         setError('')
@@ -173,10 +180,6 @@ export default function FlightCard({ data, departure, arrival, refresh,
         return num.toString().padStart(2, '0')
     }
 
-    function setNotifications() {
-
-    }
-
     return (
         <div className="flex flex-col border border-electric rounded-xl bg-black pb-3 justify-between max-h-min">
             <div className="flex justify-between px-3 rounded-xl py-3 bg-black">
@@ -226,7 +229,7 @@ export default function FlightCard({ data, departure, arrival, refresh,
                                     <i className='bx bx-refresh bx-xs'></i>
                             </button>
                             {authenticated && (
-                            <button title="Get live notifications" onClick={setNotifications} 
+                            <button title="Get live notifications" onClick={() => setNotifications(!notifications)} 
                                     className="flex items-center border 
                                              border-electric rounded-xl mr-2 
                                                mt-3 h-7">

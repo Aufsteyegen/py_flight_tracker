@@ -1,14 +1,59 @@
 
 
 import { useState } from 'react'
-export default function JournalCard({ item, journal, setJournal }) {
+import axios from 'axios'
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+axios.defaults.xsrfCookieName = "csrftoken"
+
+
+
+export default function JournalCard({ item, journal, setJournal,
+                                      email, setEmail }) {
+                    
     const [confirmDelete, setConfirmDelete] = useState(false)
-    function handleDelete(e) {
+
+    let csrfToken = null
+
+    async function getCsrfToken() {
+        if (csrfToken === null) {
+          const response = await fetch(`http://127.0.0.1:8000/csrf/`, {
+            credentials: 'include',
+          })
+          const data = await response.json()
+          csrfToken = data.csrfToken
+        }
+        return csrfToken
+    }
+      
+
+    async function handleDelete(e) {
+        csrfToken = await getCsrfToken()
         e.preventDefault()
-        const newArray = journal.filter((flightItem) => flightItem.id !== item.id)
-        setJournal(newArray)
-        const json_journal = JSON.stringify(newArray)
-        localStorage.setItem('sky_journal_journal', json_journal)
+        const deleteItem = {
+            email : email,
+            flight_id : item.id
+        }
+        try {
+            const token = csrfToken
+            fetch('http://127.0.0.1:8000/update/delete_flight', {
+                credentials: 'include',
+                method: 'DELETE',
+                mode: 'same-origin',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': token
+                },
+                body: deleteItem
+            })
+            const newArray = journal.filter((flightItem) => flightItem.id !== item.id)
+            setJournal(newArray)
+            const json_journal = JSON.stringify(newArray)
+            localStorage.setItem('sky_journal_journal', json_journal)
+        } catch (error) {
+            //console.log(error)
+        }
+        
     }
 
     return (
@@ -49,7 +94,7 @@ export default function JournalCard({ item, journal, setJournal }) {
                         <div className="mr-3">{item.distance} mi</div>
                         <div>{item.flight_time[0]}h{item.flight_time[1]}m</div>
                     </div>
-                    <div>{item.month}/{item.day}/{item.year}</div>
+                    <div>{item.flight_date}</div>
                 </div>
             </div>
         </div>

@@ -10,7 +10,7 @@ CREATE TABLE flights (
     aircraft_tail VARCHAR(10),
     distance INTEGER,
     flight_time INTEGER,
-    flight_date DATE,
+    flight_date VARCHAR(20),
     live BOOLEAN,
     track BOOLEAN
 )

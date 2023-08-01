@@ -1,15 +1,15 @@
 import './index.css'
 import axios from 'axios'
 import { useAuth0 } from "@auth0/auth0-react"
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function Navbar({ authenticated, setAuthenticated, journal,
-                                 trackFlight, setTrackFlight }) {
-    const { loginWithRedirect, isAuthenticated, logout } = useAuth0()
+                                 trackFlight, setTrackFlight,
+                                 email, setEmail }) {
+    const { loginWithRedirect, isAuthenticated, logout, user } = useAuth0()
     const fetchData = async () => {
         for (const item of journal) {
         const flightTime = item.flight_time[0] * 60 + item.flight_time[1]
-        console.log(item)
         const databaseVals = {
             flight_id: item.id,
             callsign: item.callsign,
@@ -18,15 +18,14 @@ export default function Navbar({ authenticated, setAuthenticated, journal,
             aircraft_type: item.aircraft,
             aircraft_tail: item.tail,
             distance: item.distance,
-            track: trackFlight,
+            track: item.track,
             flight_time: flightTime,
-            date : item.current_date,
-            live : false
+            flight_date : item.flight_date,
+            live : item.live,
+            email : email
         }
-        console.log(databaseVals)
         try {
-            const returnVals = await axios.get('http://127.0.0.1:8000/api/update/', { params: databaseVals })
-            console.log(returnVals, 'AHHHH')
+            const returnVals = await axios.get('http://127.0.0.1:8000/update/add_flight', { params: databaseVals })
         } catch (error) {
             console.error('Error fetching data:', error)
         }
@@ -34,6 +33,7 @@ export default function Navbar({ authenticated, setAuthenticated, journal,
     }
     useEffect(() => {
         if (isAuthenticated) {
+            setEmail(user.email)
             setAuthenticated(true)
             fetchData()
         }

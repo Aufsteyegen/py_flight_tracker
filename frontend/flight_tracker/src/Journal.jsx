@@ -19,7 +19,8 @@ function generateLine(destination, arrival) {
     )
 }
 
-export default function Journal({ authenticated, journal, setJournal }) {
+export default function Journal({ authenticated, journal, setJournal,
+                                  email, setEmail }) {
     const [flightHours, setFlightHours] = useState(0)
     const [flightMiles, setFlightMiles] = useState(0)
     const mapContainer = useRef(null)
@@ -109,7 +110,7 @@ export default function Journal({ authenticated, journal, setJournal }) {
             {journal.map((item, index) => {
                 return (
                 <JournalCard item={item} journal={journal} setJournal={setJournal} 
-                             key={index} 
+                             key={index} email={email} setEmail={setEmail}
                 />
             )
             })}
