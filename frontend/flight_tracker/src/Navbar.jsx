@@ -1,13 +1,13 @@
 import './index.css'
 import axios from 'axios'
 import { useAuth0 } from "@auth0/auth0-react"
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 export default function Navbar({ authenticated, setAuthenticated, journal,
                                  trackFlight, setTrackFlight,
                                  email, setEmail }) {
     const { loginWithRedirect, isAuthenticated, logout, user } = useAuth0()
-    const fetchData = async () => {
+    const syncData = async () => {
         for (const item of journal) {
         const flightTime = item.flight_time[0] * 60 + item.flight_time[1]
         const databaseVals = {
@@ -25,9 +25,9 @@ export default function Navbar({ authenticated, setAuthenticated, journal,
             email : email
         }
         try {
-            const returnVals = await axios.get('http://127.0.0.1:8000/update/add_flight', { params: databaseVals })
+            const syncedData = await axios.get('http://127.0.0.1:8000/update/sync_flights', { params: databaseVals })
         } catch (error) {
-            console.error('Error fetching data:', error)
+            console.error('Error syncing data:', error)
         }
         }
     }
@@ -35,9 +35,9 @@ export default function Navbar({ authenticated, setAuthenticated, journal,
         if (isAuthenticated) {
             setEmail(user.email)
             setAuthenticated(true)
-            fetchData()
+            syncData()
         }
-    }, [isAuthenticated])   
+    }, [isAuthenticated, journal])   
     return (
         <div className="text-sm bg-black flex justify-end border-b border-electric py-4 mb-8 w-1/2 px-5">
             {!authenticated && (
@@ -48,7 +48,6 @@ export default function Navbar({ authenticated, setAuthenticated, journal,
             )}
             {authenticated && (
                 <>
-                     <button onClick={fetchData}>AHHHh</button>
                     <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
                              className="border border-electric rounded-xl px-2 py-1 mr-2">Log out
                     </button>

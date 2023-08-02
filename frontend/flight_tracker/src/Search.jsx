@@ -2,8 +2,7 @@ import axios from 'axios'
 import FlightCard from './FlightCard'
 import { useState } from 'react'
 
-export default function Search({ 
-                                 departure, setDeparture,
+export default function Search({ departure, setDeparture,
                                  arrival, setArrival,
                                  airline, setAirline,
                                  flightNumber, setFlightNumber,
@@ -42,20 +41,20 @@ export default function Search({
     }
     return (
         <div>
-        
             <div>
                 <div className="text-3xl">Flight tracker</div>
                 <div className="mb-5 text-xl">Track live and upcoming flights.</div>
                 {fetched && !loading && (
-                    <div className="max-h-min pb-7"><FlightCard data={data} setData={setData}
-                                                                departure={departure}
-                                                                arrival={arrival} authenticated={authenticated}
-                                                                refresh={handleSubmit}
-                                                                setLoading={setLoading}
-                                                                setInJournal={setInJournal} inJournal={inJournal}
-                                                                journal={journal} setJournal={setJournal}
-                                                                setError={setError} setFetched={setFetched}
-                        />
+                    <div className="max-h-min pb-7"><FlightCard 
+                                                        data={data} setData={setData}
+                                                        departure={departure}
+                                                        arrival={arrival} authenticated={authenticated}
+                                                        refresh={handleSubmit}
+                                                        setLoading={setLoading}
+                                                        setInJournal={setInJournal} inJournal={inJournal}
+                                                        journal={journal} setJournal={setJournal}
+                                                        setError={setError} setFetched={setFetched}
+                    />
                     </div>
                 )}
                 {(loading && !error && !fetched) && (

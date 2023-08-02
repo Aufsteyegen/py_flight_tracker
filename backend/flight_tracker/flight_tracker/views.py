@@ -5,8 +5,9 @@ from FlightRadar24 import FlightRadar24API
 import json
 import time
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.utils.decorators import method_decorator
 
-@ensure_csrf_cookie
 def flightradar_api(request):
     """
     Handles HTTP GET request from FlightCard.jsx frontend,
@@ -85,7 +86,6 @@ def flightradar_api(request):
         return HttpResponseServerError(json.dumps(flight_data), content_type='application/json')
     return JsonResponse(flight_data)
 
-@ensure_csrf_cookie
 def get_flight_coords(trail):
     """
     Unpacks trail coordinates for a given flight.

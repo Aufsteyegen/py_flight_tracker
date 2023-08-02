@@ -4,8 +4,7 @@ import { useState } from 'react'
 import axios from 'axios'
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
 axios.defaults.xsrfCookieName = "csrftoken"
-
-
+axios.defaults.withCredentials = true
 
 export default function JournalCard({ item, journal, setJournal,
                                       email, setEmail }) {
@@ -28,6 +27,7 @@ export default function JournalCard({ item, journal, setJournal,
 
     async function handleDelete(e) {
         csrfToken = await getCsrfToken()
+        console.log(csrfToken, 'AHHH', 'AHOY AHOY AHOY')
         e.preventDefault()
         const deleteItem = {
             email : email,
@@ -35,23 +35,24 @@ export default function JournalCard({ item, journal, setJournal,
         }
         try {
             const token = csrfToken
-            fetch('http://127.0.0.1:8000/update/delete_flight', {
-                credentials: 'include',
-                method: 'DELETE',
-                mode: 'same-origin',
+            await axios({
+                method:'delete', 
+                url: 'http://127.0.0.1:8000/update/delete_flight', 
+                data: deleteItem,
+                xsrfCookieName: 'csrftoken',
+                xsrfHeaderName: 'X-CSRFTOKEN',
+                withCredentials: true,
                 headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-                  'X-CSRFToken': token
-                },
-                body: deleteItem
+                    'X-CSRFTOKEN': token
+                }
             })
+            
             const newArray = journal.filter((flightItem) => flightItem.id !== item.id)
             setJournal(newArray)
             const json_journal = JSON.stringify(newArray)
             localStorage.setItem('sky_journal_journal', json_journal)
         } catch (error) {
-            //console.log(error)
+            console.log(error)
         }
         
     }

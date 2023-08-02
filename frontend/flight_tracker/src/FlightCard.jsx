@@ -56,6 +56,7 @@ export default function FlightCard({ data, departure, arrival, refresh,
     }, [journal])
     function resetSearch() {
         setLoading(false)
+        setInJournal(false)
         setData({
             callsign : '',
             departure : '',
