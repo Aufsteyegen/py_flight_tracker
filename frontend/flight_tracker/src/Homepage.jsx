@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 
 export default function Homepage({ authenticated, journal, setJournal,
                                    trackingFlight, setTrackingFlight,
-                                   email, setEmail }) {
+                                   email, setEmail, syncData }) {
     const [departure, setDeparture] = useState("")
     const [arrival, setArrival] = useState("")
 
@@ -17,8 +17,10 @@ export default function Homepage({ authenticated, journal, setJournal,
     const [inJournal, setInJournal] = useState(false)
 
     const [fetched, setFetched] = useState(false)
+    
+    const [logFlight, setLogFlight] = useState(false)
     return (
-        <div className="max-w-min flex flex-col justify-center border-electric">
+        <div className="max-w-min flex flex-col justify-center border-electric mt-20">
             <div className="flex">
                 <div className="mr-8 whitespace-nowrap"><h1>Sky Journal</h1></div>
                 <div className="text-2xl"><h2>Track live flights, log past flights, and see flight route statistics—all in one place.</h2></div>
@@ -34,11 +36,14 @@ export default function Homepage({ authenticated, journal, setJournal,
                 inJournal={inJournal} setInJournal={setInJournal}
                 authenticated={authenticated} trackingFlight={trackingFlight}
                 setTrackingFlight={setTrackingFlight} email={email}
+                logFlight={logFlight} setLogFlight={setLogFlight}
+                syncData={syncData}
             />
         <div className="text-3xl">Journal</div>
         <div className="mb-5 text-xl"><h2>View and log past flights.</h2></div>
         <Journal authenticated={authenticated} journal={journal} setJournal={setJournal}
-                 email={email} setEmail={setEmail} />
+                 email={email} setEmail={setEmail} logFlight={logFlight}
+                 setLogFlight={setLogFlight} syncData={syncData} />
         </div>
     )
 }

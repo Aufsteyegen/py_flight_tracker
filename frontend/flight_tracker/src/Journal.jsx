@@ -3,28 +3,16 @@ import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loade
 import './mapbox-gl.css'
 import JournalCard from './JournalCard'
 import { useRef, useState, useEffect } from 'react'
+import * as turf from '@turf/turf';
 
 mapboxgl.accessToken = import.meta.env.VITE_mapboxglAccessToken
 
-function generateLine(destination, arrival) {
-    return (
-        {
-            'type': 'Feature',
-            'properties': {},
-            'geometry': {
-              'type': 'LineString',
-              'coordinates': [destination, arrival]
-            }
-          }
-    )
-}
-
 export default function Journal({ authenticated, journal, setJournal,
-                                  email, setEmail }) {
+                                  email, setEmail, logFlight, setLogFlight,
+                                  syncData }) {
 
     const [flightHours, setFlightHours] = useState(0)
     const [flightMiles, setFlightMiles] = useState(0)
-    const [logFlight, setLogFlight] = useState(false)
 
     const [callsign, setCallsign] = useState('')
     const [tail, setTail] = useState('')
@@ -32,7 +20,7 @@ export default function Journal({ authenticated, journal, setJournal,
     const [arrival, setArrival] = useState('')
     const [distance, setDistance] = useState('')
     const [equipment, setEquipment] = useState('')
-    const [flightTime, setFlightTime] = useState(0)
+    const [flightTime, setFlightTime] = useState('')
     const [date, setDate] = useState('')
 
     const mapContainer = useRef(null)
@@ -58,6 +46,7 @@ export default function Journal({ authenticated, journal, setJournal,
 
     useEffect(() => {
         updateStats()
+        
     }, [journal])
 
     function convertMinutesToHoursAndMinutes(totalMinutes) {
@@ -101,7 +90,7 @@ export default function Journal({ authenticated, journal, setJournal,
             origin_coordinates: [0, 0],
             destination_coordinates: [0, 0],
             distance: distance,
-            id: 0,
+            id: null,
             aircraft: equipment,
             flight_date: `${formattedMonth}/${formattedDay}/${year}`,
             track: false,
@@ -112,12 +101,36 @@ export default function Journal({ authenticated, journal, setJournal,
         }
         addToLocalStorage(journalItem)
         setJournal((prevJournal) => [...prevJournal, journalItem])
+
+        setCallsign('')
+        setTail('')
+        setDeparture('')
+        setArrival('')
+        setDistance('')
+        setEquipment('')
+        setFlightTime('')
+        setDate('')
     }
           
     
     useEffect(() => {
-        const features = journal.map((obj) => generateLine(obj.destination_coordinates, obj.origin_coordinates));
-    
+        // Helper function to generate LineString feature between origin and destination coordinates
+        const generateLine = (origin, destination) => {
+          const start = turf.point(origin)
+          const end = turf.point(destination)
+          const line = turf.greatCircle(start, end)
+      
+          // Create separate features for start and end points
+          const startPointFeature = turf.point(origin)
+          const endPointFeature = turf.point(destination)
+      
+          return { line, startPointFeature, endPointFeature }
+        }
+      
+        const features = journal.map((obj) =>
+          generateLine(obj.origin_coordinates, obj.destination_coordinates)
+        )
+      
         if (!map.current) {
           map.current = new mapboxgl.Map({
             container: mapContainer.current,
@@ -125,16 +138,16 @@ export default function Journal({ authenticated, journal, setJournal,
             center: [lng, lat],
             zoom: zoom,
           })
-    
+      
           map.current.on('style.load', function () {
             map.current.addSource('multiple-lines-source', {
               type: 'geojson',
               data: {
                 type: 'FeatureCollection',
-                features: features,
+                features: features.flatMap((item) => [item.line, item.startPointFeature, item.endPointFeature]),
               },
             })
-    
+      
             map.current.addLayer({
               id: 'multiple-lines-layer',
               type: 'line',
@@ -142,23 +155,48 @@ export default function Journal({ authenticated, journal, setJournal,
               layout: {},
               paint: {
                 'line-color': '#00C000',
-                'line-width': 2
+                'line-width': 2,
+              },
+            })
+      
+            // Add circles at the start and end of each line
+            map.current.addLayer({
+              id: 'start-point-layer',
+              type: 'circle',
+              source: 'multiple-lines-source',
+              filter: ['==', '$type', 'Point'],
+              paint: {
+                'circle-color': '#ADD8E6',
+                'circle-radius': 4.5,
+              },
+            })
+      
+            map.current.addLayer({
+              id: 'end-point-layer',
+              type: 'circle',
+              source: 'multiple-lines-source',
+              filter: ['==', '$type', 'Point'],
+              paint: {
+                'circle-color': '#ADD8E6',
+                'circle-radius': 4.5,
               },
             })
           })
         } else {
-          // wait for  map style to be loaded before updating data
+          // wait for map style to be loaded before updating data
           const waitForStyleLoad = setInterval(() => {
             if (map.current.isStyleLoaded()) {
               clearInterval(waitForStyleLoad)
               map.current.getSource('multiple-lines-source').setData({
                 type: 'FeatureCollection',
-                features: features,
+                features: features.flatMap((item) => [item.line, item.startPointFeature, item.endPointFeature]),
               })
             }
-          }, 100)
+          }, 200)
         }
-      }, [journal])
+    }, [journal])
+      
+      
     
     useEffect(() => {
         const local_journal = localStorage.getItem('sky_journal_journal')
@@ -332,10 +370,12 @@ export default function Journal({ authenticated, journal, setJournal,
                 <span className="font-bold"> {flightMiles}</span> miles flown over 
                 <span className="font-bold"> {journal.length}</span> {journal.length != 1 ? 'flights' : 'flight'}
             </div>
+            
             <div className="text-sm">
                 BETA
             </div>
         </div>
+        <div className="text-sm mb-3">Note: routes added manually aren't yet shown.</div>
         <div ref={mapContainer} className="map cursor-grab"></div>
         </div>
     )

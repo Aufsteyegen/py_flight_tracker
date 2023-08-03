@@ -3,6 +3,7 @@ import { useRef, useEffect, useState } from 'react'
 import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import './mapbox-gl.css'
 import './index.css'
+import axios from 'axios'
 mapboxgl.accessToken = import.meta.env.VITE_mapboxglAccessToken
 
 
@@ -12,14 +13,15 @@ export default function FlightCard({ data, departure, arrival, refresh,
                                      setFetched, setDeparture, setArrival,
                                      setAirline, setFlightNumber, email,
                                      trackingFlight, setTrackingFlight,
-                                     updateJournal  }) {
+                                     syncData  }) {
     const mapContainer2 = useRef(null)
     const map = useRef(null)
-    console.log(data)
     const [notifications, setNotifications] = useState(false)
     const [lng, setLng] = useState(data.trail[0][0])
     const [lat, setLat] = useState(data.trail[0][1])
     const [zoom, setZoom] = useState(6)
+
+    const [sync, setSync] = useState(false)
     
     const currentDate = new Date()
     const month = currentDate.getMonth() + 1
@@ -27,7 +29,28 @@ export default function FlightCard({ data, departure, arrival, refresh,
     const year = currentDate.getFullYear()
 
     const timestampString = currentDate.toISOString()
-    let journalItem = {
+
+    const flightTime = data.flight_time[0] * 60 + data.flight_time[1]
+    let postgresItem = {
+        callsign : data.callsign,
+        origin : departure,
+        destination : arrival,
+        aircraft_tail : data.registration,
+        flight_time : flightTime,
+        origin_coordinates : [data.origin_stats.longitude, data.origin_stats.latitude],
+        destination_coordinates : [data.destination_stats.longitude, 
+                                   data.destination_stats.latitude],
+        distance: data.flight_distance,
+        flight_id: data.id,
+        aircraft_type: data.aircraft,
+        flight_date : `${month}/${day}/${year}`,
+        track : notifications,
+        live : data.live_status,
+        email : email,
+        time_stamp : timestampString
+    }
+
+    let localItem = {
         callsign : data.callsign,
         departure : departure,
         arrival : arrival,
@@ -46,11 +69,28 @@ export default function FlightCard({ data, departure, arrival, refresh,
         email : email,
         time_stamp : timestampString
     }
-    function updateJournal(e) {
+
+    async function updateJournal(e) {
         e.preventDefault()
-        setJournal(prevJournal => [...prevJournal, journalItem])
+        const checkInJournal = journal.filter((item) => (item.id === data.id))
+        if (checkInJournal.length == 0) {
+            setJournal(prevJournal => [...prevJournal, localItem])
+            try {
+                const syncedData = await axios.put('http://127.0.0.1:8000/update/sync_flights', { params: postgresItem })
+                //setJournal(syncedData.data)
+                //console.log(syncedData.data)
+                console.log(syncedData)
+            } catch (error) {
+                console.error('Error syncing data:', error)
+            }
+        }
     }
-    function updateTracking(e) {
+    /* useEffect(() => {
+        console.log(journal)
+        syncData()
+        setSync(false)
+    }, [sync]) */
+    async function updateTracking(e) {
         e.preventDefault()
       
         if (!notifications) {
@@ -74,12 +114,24 @@ export default function FlightCard({ data, departure, arrival, refresh,
             })
           )
         }
+        try {
+            const syncedData = await axios.put('http://127.0.0.1:8000/update/sync_flights', { params: postgresItem })
+            //setJournal(syncedData.data)
+            //console.log(syncedData.data)
+            console.log(syncedData)
+        } catch (error) {
+            console.error('Error syncing data:', error)
+        }
       }
     
     useEffect(() => {
         journal.map((item) => {
             if (item.id === data.id || item.time_stamp === data.time_stamp) {
                 setInJournal(true)
+                if (item.track) {
+                    setNotifications(true)
+                    setTrackingFlight(true)
+                }
                 return
             }
             else setInJournal(false)
@@ -250,7 +302,7 @@ export default function FlightCard({ data, departure, arrival, refresh,
                                         className="flex justify-items-start border 
                                                 border-electric rounded-xl mr-2 
                                                 mt-3 h-7 px-2 font-bold"
-                                        onClick={updateJournal}>+
+                                        onClick={(e) => {updateJournal(e)}}>+
                                 </button>
                             )}
                             {inJournal &&  (
@@ -270,7 +322,7 @@ export default function FlightCard({ data, departure, arrival, refresh,
                             {authenticated && (
                                 <>
                                 {!notifications && (
-                                    <button title="Get live notifications" onClick={(e) => {updateTracking(e)}} 
+                                    <button title="Get live notifications" onClick={(e) => {updateTracking(e), updateJournal(e)}} 
                                             className="flex items-center border 
                                                         border-electric rounded-xl mr-2 
                                                         mt-3 h-7">

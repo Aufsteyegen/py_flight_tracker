@@ -1,5 +1,4 @@
 import './index.css'
-import axios from 'axios'
 import { useAuth0 } from "@auth0/auth0-react"
 import { useEffect } from 'react'
 
@@ -7,51 +6,24 @@ export default function Navbar({ authenticated, setAuthenticated, journal,
                                  trackFlight, setTrackFlight,
                                  email, setEmail, setJournal }) {
     const { loginWithRedirect, isAuthenticated, logout, user } = useAuth0()
-    const syncData = async () => {
-        let syncedJournal = {}
-        for (const item of journal) {
-            const flightTime = item.flight_time[0] * 60 + item.flight_time[1]
-            const flightRecord = {
-                flight_id: item.id,
-                callsign: item.callsign,
-                origin: item.departure,
-                arrival: item.arrival,
-                aircraft_type: item.aircraft,
-                aircraft_tail: item.tail,
-                distance: item.distance,
-                track: item.track,
-                flight_time: flightTime,
-                flight_date : item.flight_date,
-                live : item.live,
-                email : email,
-                time_stamp :  item.time_stamp
-        }
-        syncedJournal[item.id] = flightRecord
-    }
-        try {
-            console.log(syncedJournal)
-            const syncedData = await axios.put('http://127.0.0.1:8000/update/sync_flights', { params: syncedJournal })
-            console.log(syncedData)
-        } catch (error) {
-            console.error('Error syncing data:', error)
-        }
-        
-    }
     useEffect(() => {
-        if (isAuthenticated) {
-            setEmail(user.email)
+        const checkAuth = isAuthenticated
+        if (checkAuth) {
+            const userEmail = user.email
+            setEmail(userEmail)
             setAuthenticated(true)
-            journal.map((item) => {return {...item, email : email}})
-            syncData()
+            journal.map((item) => {return {...item, email : userEmail}})
         }
-    }, [isAuthenticated, journal, trackFlight])   
+        else setAuthenticated(false)
+    }, [isAuthenticated, journal, trackFlight])
     return (
-        <div className="text-sm bg-black flex justify-end border-b border-electric py-4 mb-8 w-1/2 px-5">
+        <div className="text-sm bg-black flex justify-between border-b border-electric py-4 mb-8 w-1/2 px-5 fixed z-30">
+            <div className="flex items-center font-bold">{typeof user !== 'undefined' ? user.email : 'Not signed in.'}</div>
             {!authenticated && (
-                <>
+                <div>
                     <button onClick={() => loginWithRedirect()} className="border border-electric rounded-xl px-2 py-1 mr-2">Log in</button>
                     <button onClick={() => loginWithRedirect({authorizationParams: { screen_hint: "signup", }})} className="border border-electric rounded-xl px-2 py-1 font-bold">Sign up</button>
-                </>
+                </div>
             )}
             {authenticated && (
                 <>

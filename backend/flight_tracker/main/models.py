@@ -1,4 +1,8 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
+
+def default_coordinates():
+    return [0.0, 0.0]
 
 class Flight(models.Model):
     id = models.AutoField(primary_key=True)
@@ -15,6 +19,8 @@ class Flight(models.Model):
     time_stamp = models.DateTimeField()
     live = models.BooleanField()
     track = models.BooleanField()
+    origin_coordinates = ArrayField(models.FloatField(), default=default_coordinates)
+    destination_coordinates = ArrayField(models.FloatField(), default=default_coordinates)
 
     class Meta:
         db_table = 'flights'

@@ -9,7 +9,8 @@ export default function Search({ departure, setDeparture,
                                  fetched, setFetched,
                                  tail, setTail, authenticated,
                                  journal, setJournal, inJournal, setInJournal,
-                                 email, trackingFlight, setTrackingFlight }) {
+                                 email, trackingFlight, setTrackingFlight,
+                                 logFlight, setLogFlight, syncData }) {
     const [data, setData] = useState({})
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
@@ -60,6 +61,7 @@ export default function Search({ departure, setDeparture,
                                                         setFlightNumber={setFlightNumber}
                                                         email={email} trackingFlight={trackingFlight}
                                                         setTrackingFlight={setTrackingFlight}
+                                                        syncData={syncData}
                     />
                     </div>
                 )}
@@ -75,7 +77,7 @@ export default function Search({ departure, setDeparture,
                         <div className="flex">
                         <div>
                             <button onClick={resetSearch} className="border border-electric rounded-xl px-2 py-1 mr-2 mt-3">New search</button>
-                            <button className="border border-electric rounded-xl px-2 py-1 mr-2 mt-3">Log manually</button></div>
+                            <button className="border border-electric rounded-xl px-2 py-1 mr-2 mt-3" onClick={() => setLogFlight(!logFlight)}>Log manually</button></div>
                         </div>
                     </div>
                 )}

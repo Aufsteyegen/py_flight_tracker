@@ -4,9 +4,6 @@ from geopy import distance
 from FlightRadar24 import FlightRadar24API
 import json
 import time
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.utils.decorators import method_decorator
 
 def flightradar_api(request):
     """
@@ -96,16 +93,24 @@ def get_flight_coords(trail):
         Nested list of [lat, lng]
     """
     output = []
-    output_idx = 0
+    prev_lng = None  # keep track of the previous longitude value
     for data in trail:
         coordinates = []
         lat = data['lat']
         lng = data['lng']
+
+        # adjust longitude if it crosses the antimeridian
+        if prev_lng is not None:
+            lng += -360 if lng - prev_lng > 180 else (360 if prev_lng - lng > 180 else 0)
+
         coordinates.append(lng)
         coordinates.append(lat)
         output.append(coordinates)
-        output_idx += 1
+
+        prev_lng = lng  # update previous longitude for next iteration
+
     return output
+
 
 def csrf(request):
     return JsonResponse({'csrfToken': get_token(request)})
