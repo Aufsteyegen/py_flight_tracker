@@ -44,6 +44,7 @@ i {
 .bx-refresh,
 .bx-check,
 .bxs-bell,
+.bx-bell-off,
 .bx-x {
     display: flex;
     align-items: center;

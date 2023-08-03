@@ -4,7 +4,7 @@ import Journal from './Journal'
 import { useState, useEffect } from 'react'
 
 export default function Homepage({ authenticated, journal, setJournal,
-                                   trackFlight, setTrackFlight,
+                                   trackingFlight, setTrackingFlight,
                                    email, setEmail }) {
     const [departure, setDeparture] = useState("")
     const [arrival, setArrival] = useState("")
@@ -32,8 +32,8 @@ export default function Homepage({ authenticated, journal, setJournal,
                 tail={tail} setTail={setTail} 
                 journal={journal} setJournal={setJournal}
                 inJournal={inJournal} setInJournal={setInJournal}
-                authenticated={authenticated} trackFlight={trackFlight}
-                setTrackFlight={setTrackFlight}
+                authenticated={authenticated} trackingFlight={trackingFlight}
+                setTrackingFlight={setTrackingFlight} email={email}
             />
         <div className="text-3xl">Journal</div>
         <div className="mb-5 text-xl"><h2>View and log past flights.</h2></div>

@@ -5,39 +5,46 @@ import { useEffect } from 'react'
 
 export default function Navbar({ authenticated, setAuthenticated, journal,
                                  trackFlight, setTrackFlight,
-                                 email, setEmail }) {
+                                 email, setEmail, setJournal }) {
     const { loginWithRedirect, isAuthenticated, logout, user } = useAuth0()
     const syncData = async () => {
+        let syncedJournal = {}
         for (const item of journal) {
-        const flightTime = item.flight_time[0] * 60 + item.flight_time[1]
-        const databaseVals = {
-            flight_id: item.id,
-            callsign: item.callsign,
-            origin: item.departure,
-            arrival: item.arrival,
-            aircraft_type: item.aircraft,
-            aircraft_tail: item.tail,
-            distance: item.distance,
-            track: item.track,
-            flight_time: flightTime,
-            flight_date : item.flight_date,
-            live : item.live,
-            email : email
+            const flightTime = item.flight_time[0] * 60 + item.flight_time[1]
+            const flightRecord = {
+                flight_id: item.id,
+                callsign: item.callsign,
+                origin: item.departure,
+                arrival: item.arrival,
+                aircraft_type: item.aircraft,
+                aircraft_tail: item.tail,
+                distance: item.distance,
+                track: item.track,
+                flight_time: flightTime,
+                flight_date : item.flight_date,
+                live : item.live,
+                email : email,
+                time_stamp :  item.time_stamp
         }
+        syncedJournal[item.id] = flightRecord
+    }
         try {
-            const syncedData = await axios.get('http://127.0.0.1:8000/update/sync_flights', { params: databaseVals })
+            console.log(syncedJournal)
+            const syncedData = await axios.put('http://127.0.0.1:8000/update/sync_flights', { params: syncedJournal })
+            console.log(syncedData)
         } catch (error) {
             console.error('Error syncing data:', error)
         }
-        }
+        
     }
     useEffect(() => {
         if (isAuthenticated) {
             setEmail(user.email)
             setAuthenticated(true)
+            journal.map((item) => {return {...item, email : email}})
             syncData()
         }
-    }, [isAuthenticated, journal])   
+    }, [isAuthenticated, journal, trackFlight])   
     return (
         <div className="text-sm bg-black flex justify-end border-b border-electric py-4 mb-8 w-1/2 px-5">
             {!authenticated && (
@@ -48,7 +55,13 @@ export default function Navbar({ authenticated, setAuthenticated, journal,
             )}
             {authenticated && (
                 <>
-                    <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                    <button onClick={() => {
+                        logout({ logoutParams: { returnTo: window.location.origin } })
+                        setJournal([])
+                        localStorage.removeItem('sky_journal_journal')
+                        
+                    }
+                    }
                              className="border border-electric rounded-xl px-2 py-1 mr-2">Log out
                     </button>
                 </>

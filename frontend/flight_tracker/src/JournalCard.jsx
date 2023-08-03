@@ -24,14 +24,13 @@ export default function JournalCard({ item, journal, setJournal,
         return csrfToken
     }
       
-
     async function handleDelete(e) {
         csrfToken = await getCsrfToken()
-        console.log(csrfToken, 'AHHH', 'AHOY AHOY AHOY')
         e.preventDefault()
         const deleteItem = {
             email : email,
-            flight_id : item.id
+            time_stamp : item.time_stamp,
+            id : item.id
         }
         try {
             const token = csrfToken
@@ -46,11 +45,11 @@ export default function JournalCard({ item, journal, setJournal,
                     'X-CSRFTOKEN': token
                 }
             })
-            
-            const newArray = journal.filter((flightItem) => flightItem.id !== item.id)
+            const newArray = journal.filter((flightItem) => flightItem.time_stamp !== item.time_stamp)
             setJournal(newArray)
             const json_journal = JSON.stringify(newArray)
             localStorage.setItem('sky_journal_journal', json_journal)
+            setConfirmDelete(false)
         } catch (error) {
             console.log(error)
         }

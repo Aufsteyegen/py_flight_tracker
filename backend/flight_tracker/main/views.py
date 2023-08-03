@@ -1,32 +1,52 @@
 from django.http import JsonResponse
 from .models import Flight
-from django.core.exceptions import ObjectDoesNotExist
-from django.views.decorators.csrf import ensure_csrf_cookie
+import json
 
 def update_flights(request):
-    try:
-        flight_id = request.GET.get('flight_id')
+    if request.method == "PUT":
         try:
-            flight = Flight.objects.get(flight_id=flight_id)
-            # if flight exists, update its fields
-            flight.callsign = request.GET.get('callsign')
-            flight.origin = request.GET.get('origin')
-            flight.destination = request.GET.get('arrival')
-            flight.aircraft_type = request.GET.get('aircraft_type')
-            flight.aircraft_tail = request.GET.get('aircraft_tail')
-            flight.distance = request.GET.get('distance')
-            flight.user_email = request.GET.get('email')
-            flight.flight_date = request.GET.get('flight_date')
-            flight.track = request.GET.get('track').lower() == 'true'
-            flight.flight_time = request.GET.get('flight_time')
-            flight.live = request.GET.get('live').lower() == 'true'
-            flight.save()
+            json_data = json.loads(request.body)
+            params_data = json_data.get('params', {})
+            synced_data = []
 
-            # return synced flight data
-            return JsonResponse({
-                'status': 'Flight updated successfully',
-                'flight_data': {
-                    'flight_id': flight.flight_id,
+            for time_stamp, flight_record in params_data.items():
+                time_stamp = flight_record.get('time_stamp')
+                flight_id = flight_record.get('flight_id', None)
+                email = flight_record.get('email')
+
+                try:
+                    # check if record with the same timestamp and email exists
+                    flight = Flight.objects.get(time_stamp=time_stamp, user_email=email)
+                except Flight.DoesNotExist:
+                    try:
+                        # check if record with the same flight ID and email exists
+                        flight = Flight.objects.get(flight_id=flight_id, user_email=email)
+                    except Flight.DoesNotExist:
+                        # if both conditions are false, create a new flight
+                        if flight_id is not None:
+                            flight = Flight(time_stamp=time_stamp)
+                        else:
+                            flight = Flight(flight_id=flight_id)
+
+                # update flight values
+                flight.callsign = flight_record.get('callsign', '')
+                flight.flight_id = flight_record.get('flight_id', '')
+                flight.origin = flight_record.get('origin', '')
+                flight.destination = flight_record.get('arrival', '')
+                flight.aircraft_type = flight_record.get('aircraft_type', '')
+                flight.aircraft_tail = flight_record.get('aircraft_tail', '')
+                flight.distance = flight_record.get('distance', 0)
+                flight.user_email = flight_record.get('email', '')
+                flight.flight_date = flight_record.get('flight_date', '')
+                flight.track = bool(flight_record.get('track', False))
+                flight.flight_time = flight_record.get('flight_time', 0)
+                flight.live = bool(flight_record.get('live', False))
+                flight.time_stamp = flight_record.get('time_stamp', '')
+
+                flight.save()
+
+                synced_data.append({
+                    'flight_id': flight.id,
                     'callsign': flight.callsign,
                     'origin': flight.origin,
                     'destination': flight.destination,
@@ -37,53 +57,29 @@ def update_flights(request):
                     'track': flight.track,
                     'flight_time': flight.flight_time,
                     'live': flight.live,
-                }
-            })
-        except ObjectDoesNotExist:
-            flight = Flight(
-                flight_id=flight_id,
-                callsign=request.GET.get('callsign'),
-                origin=request.GET.get('origin'),
-                destination=request.GET.get('arrival'),
-                aircraft_type=request.GET.get('aircraft_type'),
-                aircraft_tail=request.GET.get('aircraft_tail'),
-                distance=request.GET.get('distance'),
-                user_email=request.GET.get('email'),
-                flight_date=request.GET.get('flight_date'),
-                track=request.GET.get('track').lower() == 'true',
-                flight_time=request.GET.get('flight_time'),
-                live=request.GET.get('live').lower() == 'true',
-            )
-            flight.save()
+                    'time_stamp': flight.time_stamp
+                })
 
-            # return synced flight data for the newly added flight
-            return JsonResponse({
-                'status': 'New flight added successfully',
-                'flight_data': {
-                    'flight_id': flight.flight_id,
-                    'callsign': flight.callsign,
-                    'origin': flight.origin,
-                    'destination': flight.destination,
-                    'aircraft_type': flight.aircraft_type,
-                    'aircraft_tail': flight.aircraft_tail,
-                    'distance': flight.distance,
-                    'flight_date': flight.flight_date,
-                    'track': flight.track,
-                    'flight_time': flight.flight_time,
-                    'live': flight.live,
-                }
-            })
-    except Exception as e:
-        # returngeneric error response for any unanticipated errors
-        return JsonResponse({'status': 'Error occurred during synchronization', 
-                             'error': str(e)})
+            return JsonResponse(synced_data, safe=False)
+
+        except json.JSONDecodeError as e:
+            return JsonResponse({'error': 'Invalid JSON data.'}, status=400)
+
+        except Exception as e:
+            return JsonResponse({'status': 'Error occurred during synchronization', 'error': str(e)})
+
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
 
 
 def delete_flights(request):
-    flight_id = request.GET.get('flight_id', None)
-    email = request.GET.get('email', None)
+    data = json.loads(request.body.decode('utf-8'))
+    time_stamp = data.get('time_stamp', None)
+    email = data.get('email', None)
+    print(time_stamp, email)
     try:
-        flight_to_delete = Flight.objects.get(user_email=email, flight_id=flight_id)
+        flight_to_delete = Flight.objects.get(user_email=email, time_stamp=time_stamp)
         flight_to_delete.delete()
         return JsonResponse({'status': 'Flight deleted successfully'})
     except Flight.DoesNotExist:

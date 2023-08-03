@@ -9,7 +9,10 @@ mapboxgl.accessToken = import.meta.env.VITE_mapboxglAccessToken
 export default function FlightCard({ data, departure, arrival, refresh, 
                                      setLoading, authenticated, journal, setJournal,
                                      inJournal, setInJournal, setData, setError,
-                                     setFetched }) {
+                                     setFetched, setDeparture, setArrival,
+                                     setAirline, setFlightNumber, email,
+                                     trackingFlight, setTrackingFlight,
+                                     updateJournal  }) {
     const mapContainer2 = useRef(null)
     const map = useRef(null)
     console.log(data)
@@ -22,7 +25,9 @@ export default function FlightCard({ data, departure, arrival, refresh,
     const month = currentDate.getMonth() + 1
     const day = currentDate.getDate()
     const year = currentDate.getFullYear()
-    const journalItem = {
+
+    const timestampString = currentDate.toISOString()
+    let journalItem = {
         callsign : data.callsign,
         departure : departure,
         arrival : arrival,
@@ -37,15 +42,43 @@ export default function FlightCard({ data, departure, arrival, refresh,
         flight_date : `${month}/${day}/${year}`,
         track : notifications,
         live : data.live_status,
-        status_text : data.status_text
+        status_text : data.status_text,
+        email : email,
+        time_stamp : timestampString
     }
     function updateJournal(e) {
         e.preventDefault()
         setJournal(prevJournal => [...prevJournal, journalItem])
     }
+    function updateTracking(e) {
+        e.preventDefault()
+      
+        if (!notifications) {
+          setNotifications(true)
+          setJournal((prevJournal) =>
+            prevJournal.map((record) => {
+              if (record.id === data.id || record.time_stamp === data.time_stamp) {
+                return { ...record, track: true }
+              }
+              return record;
+            })
+          );
+        } else {
+          setNotifications(false)
+          setJournal((prevJournal) =>
+            prevJournal.map((record) => {
+              if (record.id === data.id || record.time_stamp === data.time_stamp) {
+                return { ...record, track: false }
+              }
+              return record;
+            })
+          )
+        }
+      }
+    
     useEffect(() => {
         journal.map((item) => {
-            if (item.id === data.id) {
+            if (item.id === data.id || item.time_stamp === data.time_stamp) {
                 setInJournal(true)
                 return
             }
@@ -57,6 +90,10 @@ export default function FlightCard({ data, departure, arrival, refresh,
     function resetSearch() {
         setLoading(false)
         setInJournal(false)
+        setFlightNumber('')
+        setAirline('')
+        setDeparture('')
+        setArrival('')
         setData({
             callsign : '',
             departure : '',
@@ -75,8 +112,9 @@ export default function FlightCard({ data, departure, arrival, refresh,
             id: '',
             aircraft: '',
             current_date : '',
-            live : '',
-            track : ''
+            live : false,
+            track : false,
+            email: email
         })
         setFetched(false)
         setError('')
@@ -216,7 +254,7 @@ export default function FlightCard({ data, departure, arrival, refresh,
                                 </button>
                             )}
                             {inJournal &&  (
-                                <button title="Flight already logged" onClick={refresh} 
+                                <button title="Flight already logged"
                                 id="disabled" className="flex items-center border 
                                 border-gray-500 rounded-xl mr-2 
                                            mt-3 h-7 " disabled>
@@ -230,21 +268,35 @@ export default function FlightCard({ data, departure, arrival, refresh,
                                     <i className='bx bx-refresh bx-xs'></i>
                             </button>
                             {authenticated && (
-                            <button title="Get live notifications" onClick={() => setNotifications(!notifications)} 
-                                    className="flex items-center border 
-                                             border-electric rounded-xl mr-2 
-                                               mt-3 h-7">
-                                    <i className='bx bxs-bell bx-xs'></i>
-                            </button>
+                                <>
+                                {!notifications && (
+                                    <button title="Get live notifications" onClick={(e) => {updateTracking(e)}} 
+                                            className="flex items-center border 
+                                                        border-electric rounded-xl mr-2 
+                                                        mt-3 h-7">
+                                            <i className='bx bxs-bell bx-xs'></i>
+                                    </button>
+                                )}
+                                {notifications && (
+                                    <button title="Stop tracking flight?" 
+                                            id="disabled" className="flex items-center border 
+                                            border-gray-500 rounded-xl mr-2 
+                                                    mt-3 h-7"
+                                                    onClick={(e) => {updateTracking(e)}} >
+                                        <i className='bx bx-bell-off bx-xs'></i>
+                                </button>
+                                )}
+
+                                </>
                            
                             )}
                             {!authenticated && (
-                            <button id="disabled" title="Log in to get live notifications" 
-                                    className="flex items-center border 
-                                             border-gray-500 rounded-xl mr-2 
-                                               mt-3 h-7" disabled>
-                                    <i className='bx bxs-bell'></i>
-                            </button>
+                                <button id="disabled" title="Log in to get live notifications" 
+                                        className="flex items-center border 
+                                                border-gray-500 rounded-xl mr-2 
+                                                mt-3 h-7" disabled>
+                                        <i className='bx bxs-bell'></i>
+                                </button>
                             )}
                             <button title="Start new search" onClick={resetSearch}
                                     className="flex justify-center items-center border 

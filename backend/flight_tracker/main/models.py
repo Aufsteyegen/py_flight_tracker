@@ -12,6 +12,7 @@ class Flight(models.Model):
     distance = models.IntegerField()
     flight_time = models.IntegerField()
     flight_date = models.CharField(max_length=100)
+    time_stamp = models.DateTimeField()
     live = models.BooleanField()
     track = models.BooleanField()
 
