@@ -89,19 +89,20 @@ export default function FlightCard({ data, departure, destination, refresh,
         syncData()
         setSync(false)
     }, [sync]) */
+
     async function updateTracking(e) {
         e.preventDefault()
       
         if (!notifications) {
-          setNotifications(true)
+          setNotifications(true);
           setJournal((prevJournal) =>
             prevJournal.map((record) => {
               if (record.id === data.id || record.time_stamp === data.time_stamp) {
                 return { ...record, track: true }
               }
-              return record;
+              return record
             })
-          );
+          )
         } else {
           setNotifications(false)
           setJournal((prevJournal) =>
@@ -109,28 +110,32 @@ export default function FlightCard({ data, departure, destination, refresh,
               if (record.id === data.id || record.time_stamp === data.time_stamp) {
                 return { ...record, track: false }
               }
-              return record;
+              return record
             })
           )
         }
-        try {
-            const syncedData = await axios.put('http://127.0.0.1:8000/update/sync_flights', { params: postgresItem })
-            //setJournal(syncedData.data)
-            //console.log(syncedData.data)
-            console.log(syncedData)
-        } catch (error) {
-            console.error('Error syncing data:', error)
-        }
       }
+     
+      useEffect(() => {
+        const fetchData = async () => {
+          try {
+            console.log('track update');
+            const syncedData = await axios.put('http://127.0.0.1:8000/update/sync_flights', {
+              params: postgresItem,
+            })
+            console.log(syncedData)
+          } catch (error) {
+            console.error('Error syncing data:', error)
+          }
+        }
+        fetchData()
+      }, [notifications])
+      
     
     useEffect(() => {
         journal.map((item) => {
             if (item.id === data.id || item.time_stamp === data.time_stamp) {
                 setInJournal(true)
-                if (item.track) {
-                    setNotifications(true)
-                    setTrackingFlight(true)
-                }
                 return
             }
             else setInJournal(false)
