@@ -3,7 +3,7 @@ import FlightCard from './FlightCard'
 import { useState } from 'react'
 
 export default function Search({ departure, setDeparture,
-                                 arrival, setArrival,
+                                 destination, setDestination,
                                  airline, setAirline,
                                  flightNumber, setFlightNumber,
                                  fetched, setFetched,
@@ -18,11 +18,11 @@ export default function Search({ departure, setDeparture,
         e.preventDefault()
         const data = {
             departure: departure,
-            arrival: arrival,
+            destination: destination,
             airline: airline,
             flight_number: flightNumber
         }
-        if (departure == "" || arrival == "" || airline == "" || flightNumber == "") return
+        if (departure == "" || destination == "" || airline == "" || flightNumber == "") return
         try {
             setLoading(true)
             setFetched(false)
@@ -50,14 +50,14 @@ export default function Search({ departure, setDeparture,
                     <div className="max-h-min pb-7"><FlightCard 
                                                         data={data} setData={setData}
                                                         departure={departure}
-                                                        arrival={arrival} authenticated={authenticated}
+                                                        destination={destination} authenticated={authenticated}
                                                         refresh={handleSubmit}
                                                         setLoading={setLoading}
                                                         setInJournal={setInJournal} inJournal={inJournal}
                                                         journal={journal} setJournal={setJournal}
                                                         setError={setError} setFetched={setFetched}
                                                         setDeparture={setDeparture}
-                                                        setArrival={setArrival} setAirline={setAirline}
+                                                        setDestination={setDestination} setAirline={setAirline}
                                                         setFlightNumber={setFlightNumber}
                                                         email={email} trackingFlight={trackingFlight}
                                                         setTrackingFlight={setTrackingFlight}
@@ -138,8 +138,8 @@ export default function Search({ departure, setDeparture,
                                             w-32 rounded-xl" name="flight-num" 
                                     type="text" 
                                     placeholder="LAX"
-                                    value={arrival}
-                                    onChange={(e) => {e.target.value.length <= 3 ? setArrival(e.target.value.toUpperCase()) : null}}
+                                    value={destination}
+                                    onChange={(e) => {e.target.value.length <= 3 ? setDestination(e.target.value.toUpperCase()) : null}}
                                     required/>
                         </div>
                     

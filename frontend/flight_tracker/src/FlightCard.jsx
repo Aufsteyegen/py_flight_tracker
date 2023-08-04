@@ -7,10 +7,10 @@ import axios from 'axios'
 mapboxgl.accessToken = import.meta.env.VITE_mapboxglAccessToken
 
 
-export default function FlightCard({ data, departure, arrival, refresh, 
+export default function FlightCard({ data, departure, destination, refresh, 
                                      setLoading, authenticated, journal, setJournal,
                                      inJournal, setInJournal, setData, setError,
-                                     setFetched, setDeparture, setArrival,
+                                     setFetched, setDeparture, setDestination,
                                      setAirline, setFlightNumber, email,
                                      trackingFlight, setTrackingFlight,
                                      syncData  }) {
@@ -30,13 +30,12 @@ export default function FlightCard({ data, departure, arrival, refresh,
 
     const timestampString = currentDate.toISOString()
 
-    const flightTime = data.flight_time[0] * 60 + data.flight_time[1]
     let postgresItem = {
         callsign : data.callsign,
         origin : departure,
-        destination : arrival,
+        destination : destination,
         aircraft_tail : data.registration,
-        flight_time : flightTime,
+        flight_time : [data.flight_time[0], data.flight_time[1]],
         origin_coordinates : [data.origin_stats.longitude, data.origin_stats.latitude],
         destination_coordinates : [data.destination_stats.longitude, 
                                    data.destination_stats.latitude],
@@ -53,7 +52,7 @@ export default function FlightCard({ data, departure, arrival, refresh,
     let localItem = {
         callsign : data.callsign,
         departure : departure,
-        arrival : arrival,
+        destination : destination,
         tail : data.registration,
         flight_time : [data.flight_time[0], data.flight_time[1]],
         origin_coordinates : [data.origin_stats.longitude, data.origin_stats.latitude],
@@ -145,11 +144,11 @@ export default function FlightCard({ data, departure, arrival, refresh,
         setFlightNumber('')
         setAirline('')
         setDeparture('')
-        setArrival('')
+        setDestination('')
         setData({
             callsign : '',
             departure : '',
-            arrival : '',
+            destination : '',
             trail : [[0, 0], [0, 0]],
             tail : '',
             flight_time : [[0, 0], [0, 0]],
@@ -277,7 +276,7 @@ export default function FlightCard({ data, departure, arrival, refresh,
                 <div className="flex flex-col">
                     <div className="flex">
                         <div className="text-3xl font-bold mr-3">{data.callsign}</div>
-                        <div className="text-3xl">{departure}–{arrival}</div>
+                        <div className="text-3xl">{departure}–{destination}</div>
                     </div>
                     <div className="flex">
                         <div className="text-2xl mr-3">{data.aircraft}</div>

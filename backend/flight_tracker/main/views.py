@@ -11,8 +11,8 @@ def update_flights(request):
             print(json_data)
             params_data = json_data
             synced_data = []
-            email = params_data.get('email', '')
-            if len(params_data) >= 1:
+            email = params_data['params'].get('email', '')
+            if (len(params_data['params']) > 1 and email != ''):
                 for time_stamp, flight_record in params_data.items():
                     time_stamp = flight_record.get('time_stamp')
                     flight_id = flight_record.get('flight_id', None)
@@ -45,7 +45,7 @@ def update_flights(request):
                     flight.user_email = flight_record.get('email', '')
                     flight.flight_date = flight_record.get('flight_date', '')
                     flight.track = bool(flight_record.get('track', False))
-                    flight.flight_time = flight_record.get('flight_time', 0)
+                    flight.flight_time = flight_record.get('flight_time', [0, 0])
                     flight.live = bool(flight_record.get('live', False))
                     flight.time_stamp = flight_record.get('time_stamp', '')
                     flight.origin_coordinates = flight_record.get('origin_coordinates', '')
@@ -69,8 +69,8 @@ def update_flights(request):
                         'origin_coordinates' : flight.origin_coordinates,
                         'destination_coordinates' : flight.destination_coordinates
                     })
-            else:
-                print('FAILED.')
+            if email == '':
+                return JsonResponse({'error' : 'Cannot save flight (user not authenticated).'}, status=401)
             all_data = get_flights_by_email(email)
             return JsonResponse(all_data, safe=False)
 
@@ -88,6 +88,7 @@ def update_flights(request):
 def get_flights_by_email(email):
     try:
         flights = Flight.objects.filter(user_email=email)
+        print('user flights', flights)
         synced_data = []
 
         for flight in flights:

@@ -63,7 +63,7 @@ export default function JournalCard({ item, journal, setJournal,
                 <div className="flex justify-between">
                     <div className="flex">
                         <div className="text-3xl font-bold mr-3">{item.callsign}</div>
-                        <div className="text-3xl">{item.departure}–{item.arrival}</div>
+                        <div className="text-3xl">{item.departure}–{item.destination}</div>
                     </div>
                     {!confirmDelete && (
                     <div className="font-bold"><button title="Delete flight from log" 

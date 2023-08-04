@@ -14,7 +14,7 @@ class Flight(models.Model):
     aircraft_type = models.CharField(max_length=50)
     aircraft_tail = models.CharField(max_length=10)
     distance = models.IntegerField()
-    flight_time = models.IntegerField()
+    flight_time = ArrayField(models.IntegerField())
     flight_date = models.CharField(max_length=100)
     time_stamp = models.DateTimeField()
     live = models.BooleanField()

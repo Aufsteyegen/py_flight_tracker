@@ -7,7 +7,7 @@ export default function Homepage({ authenticated, journal, setJournal,
                                    trackingFlight, setTrackingFlight,
                                    email, setEmail, syncData }) {
     const [departure, setDeparture] = useState("")
-    const [arrival, setArrival] = useState("")
+    const [destination, setDestination] = useState("")
 
     const [airline, setAirline] = useState("")
     const [flightNumber, setFlightNumber] = useState("")
@@ -27,7 +27,7 @@ export default function Homepage({ authenticated, journal, setJournal,
             </div>
             <div className="border-b border-electric my-5"></div>
         <Search departure={departure} setDeparture={setDeparture}
-                arrival={arrival} setArrival={setArrival}
+                destination={destination} setDestination={setDestination}
                 airline={airline} setAirline={setAirline}
                 flightNumber={flightNumber} setFlightNumber={setFlightNumber}
                 fetched={fetched} setFetched={setFetched}

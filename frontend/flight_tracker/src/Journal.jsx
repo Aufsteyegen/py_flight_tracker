@@ -17,7 +17,7 @@ export default function Journal({ authenticated, journal, setJournal,
     const [callsign, setCallsign] = useState('')
     const [tail, setTail] = useState('')
     const [departure, setDeparture] = useState('')
-    const [arrival, setArrival] = useState('')
+    const [destination, setDestination] = useState('')
     const [distance, setDistance] = useState('')
     const [equipment, setEquipment] = useState('')
     const [flightTime, setFlightTime] = useState('')
@@ -84,7 +84,7 @@ export default function Journal({ authenticated, journal, setJournal,
         const journalItem = {
             callsign: callsign,
             departure: departure,
-            arrival: arrival,
+            destination: destination,
             tail: tail,
             flight_time: [convertedTime[0], convertedTime[1]],
             origin_coordinates: [0, 0],
@@ -105,7 +105,7 @@ export default function Journal({ authenticated, journal, setJournal,
         setCallsign('')
         setTail('')
         setDeparture('')
-        setArrival('')
+        setDestination('')
         setDistance('')
         setEquipment('')
         setFlightTime('')
@@ -294,7 +294,7 @@ export default function Journal({ authenticated, journal, setJournal,
                                 text-white placeholder-gray-400 
                                 pl-3 border bg-black 
                                 border-electric w-36 rounded-xl" placeholder="SFO"
-                            value={arrival} onChange={(e) => {e.target.value.length > 3 ? '' : setArrival(e.target.value.toUpperCase())}}
+                            value={destination} onChange={(e) => {e.target.value.length > 3 ? '' : setDestination(e.target.value.toUpperCase())}}
                             required>
                     </input>
                     </div>
@@ -355,7 +355,7 @@ export default function Journal({ authenticated, journal, setJournal,
         )}
         <div className="mb-5 max-h-80 overflow-y-scroll grid grid-cols-2 gap-4 border-b border-electric">
             {journal.length === 0 && (
-                <div className="mb-5">You've logged no flights.</div>
+                <div className="mb-5">You have logged no flights.</div>
             )}
             {journal.map((item, index) => {
                 return (
