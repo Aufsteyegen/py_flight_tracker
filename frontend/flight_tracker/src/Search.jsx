@@ -2,6 +2,8 @@ import axios from 'axios'
 import FlightCard from './FlightCard'
 import { useState } from 'react'
 
+const lightSailIp = import.meta.env.VITE_LIGHTSAIL_IP
+
 export default function Search({ departure, setDeparture,
                                  destination, setDestination,
                                  airline, setAirline,
@@ -27,7 +29,7 @@ export default function Search({ departure, setDeparture,
             setLoading(true)
             setFetched(false)
             setData({})
-            const returnVals = await axios.get('https://frontend-files.d2784ujtzwur8a.amplifyapp.com/flights/', { params: data })
+            const returnVals = await axios.get(`http://${lightSailIp}:8000/flights/`, { params: data })
             setData(returnVals.data)
             setFetched(true)
             setLoading(false)

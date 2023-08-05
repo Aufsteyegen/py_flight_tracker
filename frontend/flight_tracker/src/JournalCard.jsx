@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import axios from 'axios'
 
+const lightSailIp = import.meta.env.VITE_LIGHTSAIL_IP
+
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
 axios.defaults.xsrfCookieName = "csrftoken"
 axios.defaults.withCredentials = true
@@ -16,7 +18,7 @@ export default function JournalCard({ item, journal, setJournal,
 
     async function getCsrfToken() {
         if (csrfToken === null) {
-          const response = await fetch(`https://frontend-files.d2784ujtzwur8a.amplifyapp.com/csrf/`, {
+          const response = await fetch(`https://${lightSailIp}/csrf/`, {
             credentials: 'include',
           })
           const data = await response.json()
