@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-
+const lightSailIp = import.meta.env.VITE_LIGHTSAIL_IP
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,7 +11,7 @@ export default defineConfig({
       port: 3000,
       proxy: {
         '/': {
-          target: `https://${import.meta.env.VITE_LIGHTSAIL_IP}:8000`,
+          target: `https://${lightSailIp}:8000`,
           changeOrigin: true,
         },
       },
