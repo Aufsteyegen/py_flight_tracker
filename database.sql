@@ -1,5 +1,6 @@
 CREATE DATABASE sky_journal;
 
+
 CREATE TABLE flights (
     id SERIAL PRIMARY KEY,
     flight_id VARCHAR(100),
@@ -18,3 +19,4 @@ CREATE TABLE flights (
     origin_coordinates DOUBLE PRECISION[] DEFAULT '{0.0, 0.0}',
     destination_coordinates DOUBLE PRECISION[] DEFAULT '{0.0, 0.0}'
 );
+
