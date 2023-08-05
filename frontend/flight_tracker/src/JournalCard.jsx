@@ -16,7 +16,7 @@ export default function JournalCard({ item, journal, setJournal,
 
     async function getCsrfToken() {
         if (csrfToken === null) {
-          const response = await fetch(`http://127.0.0.1:8000/csrf/`, {
+          const response = await fetch(`https://frontend-files.d2784ujtzwur8a.amplifyapp.com/csrf/`, {
             credentials: 'include',
           })
           const data = await response.json()
@@ -37,7 +37,7 @@ export default function JournalCard({ item, journal, setJournal,
             const token = csrfToken
             await axios({
                 method:'delete', 
-                url: 'http://127.0.0.1:8000/update/delete_flight', 
+                url: 'https://frontend-files.d2784ujtzwur8a.amplifyapp.com/update/delete_flight', 
                 data: deleteItem,
                 xsrfCookieName: 'csrftoken',
                 xsrfHeaderName: 'X-CSRFTOKEN',

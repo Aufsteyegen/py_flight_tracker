@@ -71,7 +71,7 @@ function App() {
         try {
             if (Object.keys(syncedJournal).length === 0) syncedJournal = {email : user.email }
             console.log(syncedJournal)
-            const syncedData = await axios.put('http://127.0.0.1:8000/update/sync_flights', { params: syncedJournal })
+            const syncedData = await axios.put('https://frontend-files.d2784ujtzwur8a.amplifyapp.com/update/sync_flights', { params: syncedJournal })
             //setJournal(syncedData.data)
             //console.log(syncedData.data)
             console.log(syncedData)

@@ -27,7 +27,7 @@ export default function Search({ departure, setDeparture,
             setLoading(true)
             setFetched(false)
             setData({})
-            const returnVals = await axios.get('http://127.0.0.1:8000/flights/', { params: data })
+            const returnVals = await axios.get('https://frontend-files.d2784ujtzwur8a.amplifyapp.com/flights/', { params: data })
             setData(returnVals.data)
             setFetched(true)
             setLoading(false)
