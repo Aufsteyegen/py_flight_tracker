@@ -19,3 +19,4 @@ CREATE TABLE flights (
     origin_coordinates DOUBLE PRECISION[] DEFAULT '{0.0, 0.0}',
     destination_coordinates DOUBLE PRECISION[] DEFAULT '{0.0, 0.0}'
 );
+
