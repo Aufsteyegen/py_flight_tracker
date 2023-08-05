@@ -1,5 +1,6 @@
 CREATE DATABASE sky_journal;
 
+
 CREATE TABLE flights (
     id SERIAL PRIMARY KEY,
     flight_id VARCHAR(100),
