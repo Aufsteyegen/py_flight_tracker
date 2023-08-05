@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-y_gkwkehh++mg0t5(f3w$brqc9)@%(+jmwj!1ezx#9y^q4nve+"
+SECRET_KEY = os.environ.get('DJ_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -111,7 +111,7 @@ DATABASES = {
         'NAME': 'sky_journal',
         'USER': os.environ.get('SJ_DATABASE_USER'),
         'PASSWORD': os.environ.get('SJ_DATABASE_PASSWORD'),
-        'HOST': 'localhost',  
+        'HOST': os.environ.get('SJ_DATABASE_HOST'),  
         'PORT': '',
     }
 }
@@ -147,9 +147,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-STATICFILES_DIRS = [
-    '/Users/main/Desktop/py_flight_tracker/frontend/flight_tracker/dist',
-]
+STATICFILES_DIRS = []
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
