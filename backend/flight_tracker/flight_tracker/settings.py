@@ -110,7 +110,7 @@ WSGI_APPLICATION = "flight_tracker.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sky_journal',
+        'NAME': 'postgres',
         'USER': os.environ.get('SJ_DATABASE_USER'),
         'PASSWORD': os.environ.get('SJ_DATABASE_PASSWORD'),
         'HOST': os.environ.get('SJ_DATABASE_HOST'),  
