@@ -103,14 +103,12 @@ WSGI_APPLICATION = "flight_tracker.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-print(os.environ.get('DATABASE_USER'))
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'sky_journal',
-        'USER': os.environ.get('DATABASE_USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        'USER': os.environ.get('SKYJOURNAL_DATABASE_USER'),
+        'PASSWORD': os.environ.get('SKYJOURNAL_DATABASE_PASSWORD'),
         'HOST': 'localhost',  
         'PORT': '',
     }
