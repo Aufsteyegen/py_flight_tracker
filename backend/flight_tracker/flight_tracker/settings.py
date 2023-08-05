@@ -29,7 +29,7 @@ SECRET_KEY = "django-insecure-y_gkwkehh++mg0t5(f3w$brqc9)@%(+jmwj!1ezx#9y^q4nve+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['django-env.eba-ysfgwamp.us-west-2.elasticbeanstalk.com']
 
 
 CORS_ALLOW_CREDENTIALS = True
@@ -103,14 +103,14 @@ WSGI_APPLICATION = "flight_tracker.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-print(os.environ.get('DATABASE_USER'))
+#print(os.environ.get('SJ_DATABASE_USER'))
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'sky_journal',
-        'USER': os.environ.get('DATABASE_USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        'USER': os.environ.get('SJ_DATABASE_USER'),
+        'PASSWORD': os.environ.get('SJ_DATABASE_PASSWORD'),
         'HOST': 'localhost',  
         'PORT': '',
     }
@@ -148,7 +148,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 STATICFILES_DIRS = [
-    '/Users/main/Desktop/travel_planner/frontend/flight_tracker/dist',
+    '/Users/main/Desktop/py_flight_tracker/frontend/flight_tracker/dist',
 ]
 
 # Default primary key field type

@@ -3,6 +3,7 @@ from . import views
 
 
 urlpatterns = [
+    path("", views.index, name="index"),
     path("csrf/", views.csrf),
     path("ping/", views.ping),
     path("flights/", views.flightradar_api, name="flightradar_api"),
