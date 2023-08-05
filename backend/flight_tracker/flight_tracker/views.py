@@ -1,13 +1,9 @@
-from django.http import JsonResponse, HttpResponseServerError, HttpResponse
+from django.http import JsonResponse, HttpResponseServerError
 from django.middleware.csrf import get_token
 from geopy import distance
 from FlightRadar24 import FlightRadar24API
 import json
 import time
-
-def index(request):
-    print('hello!')
-    return HttpResponse("<h1>Get request not enabled.</h1>")
 
 def flightradar_api(request):
     """

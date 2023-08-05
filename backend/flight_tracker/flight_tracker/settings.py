@@ -29,7 +29,8 @@ SECRET_KEY = os.environ.get('DJ_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://frontend-files.d2784ujtzwur8a.amplifyapp.com/']
+ALLOWED_HOSTS = ['frontend-files.d2784ujtzwur8a.amplifyapp.com/',
+                 os.environ.get('LIGHTSAIL_IP')]
 
 
 CORS_ALLOW_CREDENTIALS = True
@@ -40,7 +41,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://frontend-files.d2784ujtzwur8a.amplifyapp.com"
+    "https://frontend-files.d2784ujtzwur8a.amplifyapp.com",
+    f"http://{os.environ.get('LIGHTSAIL_IP')}"
 
 ]
 
@@ -52,7 +54,8 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:8000/",
     "http://127.0.0.1:3000",
-    "https://frontend-files.d2784ujtzwur8a.amplifyapp.com"
+    "https://frontend-files.d2784ujtzwur8a.amplifyapp.com",
+    f"http://{os.environ.get('LIGHTSAIL_IP')}"
 ]
 
 
