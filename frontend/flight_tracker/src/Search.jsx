@@ -29,7 +29,7 @@ export default function Search({ departure, setDeparture,
             setLoading(true)
             setFetched(false)
             setData({})
-            const returnVals = await axios.get(`http://${lightSailIp}/flights/`, { params: data })
+            const returnVals = await axios.get(`https://skyjournalapi.app/flights/`, { params: data })
             setData(returnVals.data)
             setFetched(true)
             setLoading(false)

@@ -39,7 +39,7 @@ export default function JournalCard({ item, journal, setJournal,
             const token = csrfToken
             await axios({
                 method:'delete', 
-                url: `http://${lightSailIp}/update/delete_flight`, 
+                url: `https://skyjournalapi.app/update/delete_flight`, 
                 data: deleteItem,
                 xsrfCookieName: 'csrftoken',
                 xsrfHeaderName: 'X-CSRFTOKEN',

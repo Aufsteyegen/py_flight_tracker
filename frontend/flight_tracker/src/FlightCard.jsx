@@ -76,7 +76,7 @@ export default function FlightCard({ data, departure, destination, refresh,
         if (checkInJournal.length == 0) {
             setJournal(prevJournal => [...prevJournal, localItem])
             try {
-                const syncedData = await axios.put(`http://${lightSailIp}/update/sync_flights`, { params: postgresItem })
+                const syncedData = await axios.put(`https://skyjournalapi.app/update/sync_flights`, { params: postgresItem })
                 //setJournal(syncedData.data)
                 //console.log(syncedData.data)
                 console.log(syncedData)
@@ -121,7 +121,7 @@ export default function FlightCard({ data, departure, destination, refresh,
         const fetchData = async () => {
           try {
             console.log('track update');
-            const syncedData = await axios.put(`http://${lightSailIp}/update/sync_flights`, {
+            const syncedData = await axios.put(`https://skyjournalapi.app/update/sync_flights`, {
               params: postgresItem,
             })
             console.log(syncedData)
