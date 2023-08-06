@@ -18,7 +18,7 @@ export default function JournalCard({ item, journal, setJournal,
 
     async function getCsrfToken() {
         if (csrfToken === null) {
-          const response = await fetch(`https://${lightSailIp}/csrf/`, {
+          const response = await fetch(`/${lightSailIp}/csrf/`, {
             credentials: 'include',
           })
           const data = await response.json()
@@ -39,7 +39,7 @@ export default function JournalCard({ item, journal, setJournal,
             const token = csrfToken
             await axios({
                 method:'delete', 
-                url: 'https://frontend-files.d2784ujtzwur8a.amplifyapp.com/update/delete_flight', 
+                url: `http://${lightSailIp}/update/delete_flight`, 
                 data: deleteItem,
                 xsrfCookieName: 'csrftoken',
                 xsrfHeaderName: 'X-CSRFTOKEN',
