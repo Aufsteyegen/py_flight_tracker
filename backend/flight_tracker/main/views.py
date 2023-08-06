@@ -1,9 +1,11 @@
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from .models import Flight
 import json
 
 from django.db.models import Q
 
+@csrf_exempt
 def update_flights(request):
     if request.method == "PUT":
         try:
@@ -84,7 +86,7 @@ def update_flights(request):
         return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
 
-
+@csrf_exempt
 def get_flights_by_email(email):
     try:
         flights = Flight.objects.filter(user_email=email)
@@ -112,7 +114,7 @@ def get_flights_by_email(email):
     except Exception as e:
         return JsonResponse({'status': 'Error occurred during retrieval', 'error': str(e)})
 
-
+@csrf_exempt
 def delete_flights(request):
     data = json.loads(request.body.decode('utf-8'))
     time_stamp = data.get('time_stamp', None)

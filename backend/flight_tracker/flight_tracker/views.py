@@ -1,10 +1,12 @@
 from django.http import JsonResponse, HttpResponseServerError
+from django.views.decorators.csrf import csrf_exempt
 from django.middleware.csrf import get_token
 from geopy import distance
 from FlightRadar24 import FlightRadar24API
 import json
 import time
 
+@csrf_exempt
 def flightradar_api(request):
     """
     Handles HTTP GET request from FlightCard.jsx frontend,
@@ -83,6 +85,7 @@ def flightradar_api(request):
         return HttpResponseServerError(json.dumps(flight_data), content_type='application/json')
     return JsonResponse(flight_data)
 
+@csrf_exempt
 def get_flight_coords(trail):
     """
     Unpacks trail coordinates for a given flight.
@@ -111,9 +114,10 @@ def get_flight_coords(trail):
 
     return output
 
-
+@csrf_exempt
 def csrf(request):
     return JsonResponse({'csrfToken': get_token(request)})
 
+@csrf_exempt
 def ping(request):
     return JsonResponse({'result': 'OK'})

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from dotenv import load_dotenv
+from corsheaders.defaults import default_headers
 import os
 
 load_dotenv()
@@ -27,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJ_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['frontend-files.d2784ujtzwur8a.amplifyapp.com/',
                  os.environ.get('LIGHTSAIL_IP'), 'skyjournalapi.app',
@@ -36,30 +37,24 @@ ALLOWED_HOSTS = ['frontend-files.d2784ujtzwur8a.amplifyapp.com/',
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 CORS_ALLOW_CREDENTIALS = True
-
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:8000",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://frontend-files.d2784ujtzwur8a.amplifyapp.com",
-    f"http://{os.environ.get('LIGHTSAIL_IP')}"
-
-]
-
-CSRF_COOKIE_HTTPONLY = False
-
+CORS_ALLOW_ALL_ORIGINS = True
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
-    "http://127.0.0.1:8000/",
+    "http://127.0.0.1:8000",
     "http://127.0.0.1:3000",
+    "https://www.skyjournaltool.com",
+    "https://skyjournalapi.app",
+    "http://skyjournalapi.app",
+    "https://*.skyjournalapi.app",
+    "http://*.skyjournalapi.app"
     "https://frontend-files.d2784ujtzwur8a.amplifyapp.com",
-    f"http://{os.environ.get('LIGHTSAIL_IP')}"
+    f"http://{os.environ.get('LIGHTSAIL_IP')}",
+    'https://*.skyjournaltool.com',
+    'http://skyjournaltool.com'
+    'https://*.127.0.0.1'
 ]
-
 
 # Application definition
 
@@ -75,11 +70,11 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
