@@ -32,6 +32,7 @@ DEBUG = False
 ALLOWED_HOSTS = ['frontend-files.d2784ujtzwur8a.amplifyapp.com/',
                  os.environ.get('LIGHTSAIL_IP')]
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 CORS_ALLOW_CREDENTIALS = True
 
