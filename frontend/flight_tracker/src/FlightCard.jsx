@@ -5,7 +5,9 @@ import './mapbox-gl.css'
 import './index.css'
 import axios from 'axios'
 mapboxgl.accessToken = import.meta.env.VITE_mapboxglAccessToken
-const lightSailIp = import.meta.env.VITE_LIGHTSAIL_IP
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+axios.defaults.xsrfCookieName = "XCSRF-TOKEN"
+axios.defaults.withCredentials = true
 
 
 export default function FlightCard({ data, departure, destination, refresh, 

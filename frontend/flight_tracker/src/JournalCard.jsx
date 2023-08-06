@@ -3,10 +3,8 @@
 import { useState } from 'react'
 import axios from 'axios'
 
-const lightSailIp = import.meta.env.VITE_LIGHTSAIL_IP
-
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
-axios.defaults.xsrfCookieName = "csrftoken"
+axios.defaults.xsrfCookieName = "XCSRF-TOKEN"
 axios.defaults.withCredentials = true
 
 export default function JournalCard({ item, journal, setJournal,
@@ -14,7 +12,7 @@ export default function JournalCard({ item, journal, setJournal,
                     
     const [confirmDelete, setConfirmDelete] = useState(false)
 
-    let csrfToken = null
+    /* let csrfToken = null
 
     async function getCsrfToken() {
         if (csrfToken === null) {
@@ -25,10 +23,10 @@ export default function JournalCard({ item, journal, setJournal,
           csrfToken = data.csrfToken
         }
         return csrfToken
-    }
+    } */
       
     async function handleDelete(e) {
-        csrfToken = await getCsrfToken()
+        // csrfToken = await getCsrfToken()
         e.preventDefault()
         const deleteItem = {
             email : email,
@@ -36,17 +34,11 @@ export default function JournalCard({ item, journal, setJournal,
             id : item.id
         }
         try {
-            const token = csrfToken
+            //const token = csrfToken
             await axios({
                 method:'delete', 
                 url: `https://skyjournalapi.app/update/delete_flight`, 
                 data: deleteItem,
-                xsrfCookieName: 'csrftoken',
-                xsrfHeaderName: 'X-CSRFTOKEN',
-                withCredentials: true,
-                headers: {
-                    'X-CSRFTOKEN': token
-                }
             })
             const newArray = journal.filter((flightItem) => flightItem.time_stamp !== item.time_stamp)
             setJournal(newArray)

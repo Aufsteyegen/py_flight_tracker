@@ -5,7 +5,9 @@ import axios from 'axios'
 import { useState, useEffect } from 'react'
 import { useAuth0 } from "@auth0/auth0-react"
 
-const lightSailIp = import.meta.env.VITE_LIGHTSAIL_IP
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+axios.defaults.xsrfCookieName = "XCSRF-TOKEN"
+axios.defaults.withCredentials = true
 
 
 function App() {
