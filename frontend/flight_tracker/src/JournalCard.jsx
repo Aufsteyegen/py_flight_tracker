@@ -31,7 +31,7 @@ export default function JournalCard({ item, journal, setJournal,
             localStorage.setItem('sky_journal_journal', json_journal)
             setConfirmDelete(false)
         } catch (error) {
-            console.log(error)
+             (error)
         }
     }
 

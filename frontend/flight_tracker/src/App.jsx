@@ -43,7 +43,6 @@ function App() {
     async function syncData() {
         let syncedJournal = {}
         for (const item of journal) {
-            console.log('journal of synced entered')
             const originCoordinates = Object.prototype.hasOwnProperty.call(item, 'origin_coordinates') ? item.origin_coordinates : [0, 0]
             const destinationCoordinates = Object.prototype.hasOwnProperty.call(item, 'destination_coordinates') ? item.destination_coordinates : [0, 0]
             const flightRecord = {
@@ -67,20 +66,19 @@ function App() {
         }   
         try {
             if (Object.keys(syncedJournal).length === 0) syncedJournal = {email : user.email }
-            console.log(syncedJournal)
             const syncedData = await axios.put(`https://skyjournalapi.app/update/sync_flights`, { params: syncedJournal })
             //setJournal(syncedData.data)
-            //console.log(syncedData.data)
-            console.log(syncedData)
+            // (syncedData.data)
+             (syncedData)
             let syncedItems = []
             //if (journal.length >= 1) syncedItems = [journal]
             syncedData.data.map((item) => {
                 addJournalFlight(syncedItems, item, 'flight_id')
             })
-            console.log(syncedItems, 'items here')
+             (syncedItems, 'items here')
             //if (syncedItems.length > 0) {setJournal(syncedItems)}
-            //console.log(syncedItems, typeof syncedItems)
-            //console.log('updated journal', journal, typeof journal)
+            // (syncedItems, typeof syncedItems)
+            // ('updated journal', journal, typeof journal)
             setJournal(syncedItems)
         } catch (error) {
             if (error.response.data.error !== "Cannot save flight (user not authenticated).") console.error('Error syncing data:', error)
@@ -90,7 +88,7 @@ function App() {
     useEffect(() => {
         const checkAuth = isAuthenticated
         if (checkAuth || typeof user !== 'undefined') {
-            console.log('w')
+             ('w')
             const userEmail = user.email
             setEmail(userEmail)
             setAuthenticated(true)
