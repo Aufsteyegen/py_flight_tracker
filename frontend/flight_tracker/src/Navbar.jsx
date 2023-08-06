@@ -31,7 +31,6 @@ export default function Navbar({ authenticated, setAuthenticated, journal,
                         logout({ logoutParams: { returnTo: window.location.origin } })
                         setJournal([])
                         localStorage.removeItem('sky_journal_journal')
-                        
                     }
                     }
                              className="border border-electric rounded-xl px-2 py-1 mr-2">Log out

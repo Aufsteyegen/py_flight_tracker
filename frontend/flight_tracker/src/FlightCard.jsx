@@ -4,11 +4,8 @@ import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loade
 import './mapbox-gl.css'
 import './index.css'
 import axios from 'axios'
-mapboxgl.accessToken = import.meta.env.VITE_mapboxglAccessToken
-axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
-axios.defaults.xsrfCookieName = "XCSRF-TOKEN"
-axios.defaults.withCredentials = true
 
+mapboxgl.accessToken = import.meta.env.VITE_mapboxglAccessToken
 
 export default function FlightCard({ data, departure, destination, refresh, 
                                      setLoading, authenticated, journal, setJournal,
@@ -87,6 +84,11 @@ export default function FlightCard({ data, departure, destination, refresh,
             }
         }
     }
+    useEffect(() => {
+        const checkInJournal = journal.filter((item) => (item.id === data.id))
+        if (checkInJournal.length == 0) setInJournal(false)
+        else setInJournal(true)
+    }, [journal])
     /* useEffect(() => {
         console.log(journal)
         syncData()
@@ -122,13 +124,12 @@ export default function FlightCard({ data, departure, destination, refresh,
       useEffect(() => {
         const fetchData = async () => {
           try {
-            console.log('track update');
             const syncedData = await axios.put(`https://skyjournalapi.app/update/sync_flights`, {
               params: postgresItem,
             })
             console.log(syncedData)
           } catch (error) {
-            console.error('Error syncing data:', error)
+            if (error.response.data.error !== "Cannot save flight (user not authenticated).") console.error('Error syncing data:', error)
           }
         }
         fetchData()

@@ -2,10 +2,6 @@ import axios from 'axios'
 import FlightCard from './FlightCard'
 import { useState } from 'react'
 
-axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
-axios.defaults.xsrfCookieName = "XCSRF-TOKEN"
-axios.defaults.withCredentials = true
-
 export default function Search({ departure, setDeparture,
                                  destination, setDestination,
                                  airline, setAirline,
@@ -154,7 +150,6 @@ export default function Search({ departure, setDeparture,
                 )}
                 <div className="border-b border-electric my-5"></div>
             </div>
-          
         </div>
     )
 }

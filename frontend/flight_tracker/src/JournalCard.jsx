@@ -4,29 +4,15 @@ import { useState } from 'react'
 import axios from 'axios'
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
-axios.defaults.xsrfCookieName = "XCSRF-TOKEN"
+axios.defaults.xsrfCookieName = "csrftoken"
 axios.defaults.withCredentials = true
 
 export default function JournalCard({ item, journal, setJournal,
                                       email, setEmail }) {
                     
     const [confirmDelete, setConfirmDelete] = useState(false)
-
-    /* let csrfToken = null
-
-    async function getCsrfToken() {
-        if (csrfToken === null) {
-          const response = await fetch(`/${lightSailIp}/csrf/`, {
-            credentials: 'include',
-          })
-          const data = await response.json()
-          csrfToken = data.csrfToken
-        }
-        return csrfToken
-    } */
       
     async function handleDelete(e) {
-        // csrfToken = await getCsrfToken()
         e.preventDefault()
         const deleteItem = {
             email : email,
@@ -34,7 +20,6 @@ export default function JournalCard({ item, journal, setJournal,
             id : item.id
         }
         try {
-            //const token = csrfToken
             await axios({
                 method:'delete', 
                 url: `https://skyjournalapi.app/update/delete_flight`, 
@@ -48,7 +33,6 @@ export default function JournalCard({ item, journal, setJournal,
         } catch (error) {
             console.log(error)
         }
-        
     }
 
     return (

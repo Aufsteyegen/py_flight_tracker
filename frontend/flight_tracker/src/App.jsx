@@ -5,11 +5,6 @@ import axios from 'axios'
 import { useState, useEffect } from 'react'
 import { useAuth0 } from "@auth0/auth0-react"
 
-axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
-axios.defaults.xsrfCookieName = "XCSRF-TOKEN"
-axios.defaults.withCredentials = true
-
-
 function App() {
     const [authenticated, setAuthenticated] = useState(false)
     const [trackingFlight, setTrackingFlight] = useState(false)
@@ -19,9 +14,9 @@ function App() {
     const { loginWithRedirect, isAuthenticated, logout, user } = useAuth0()
 
     function addJournalFlight(array, flightObject, uniqueAttribute) {
-            const flightTime = flightObject.flight_time[0] * 60 + flightObject.flight_time[1]
+            /* const flightTime = flightObject.flight_time[0] * 60 + flightObject.flight_time[1]
             const originCoordinates = Object.prototype.hasOwnProperty.call(flightObject, 'origin_coordinates') ? flightObject.origin_coordinates : [0, 0]
-            const destinationCoordinates = Object.prototype.hasOwnProperty.call(flightObject, 'destination_coordinates') ? flightObject.destination_coordinates : [0, 0]
+            const destinationCoordinates = Object.prototype.hasOwnProperty.call(flightObject, 'destination_coordinates') ? flightObject.destination_coordinates : [0, 0] */
         let localItem = {
             callsign : flightObject.callsign,
             departure : flightObject.origin,
@@ -44,7 +39,6 @@ function App() {
         }
         array.push(localItem)
         }
-    
 
     async function syncData() {
         let syncedJournal = {}
@@ -89,7 +83,7 @@ function App() {
             //console.log('updated journal', journal, typeof journal)
             setJournal(syncedItems)
         } catch (error) {
-            console.error('Error syncing data:', error)
+            if (error.response.data.error !== "Cannot save flight (user not authenticated).") console.error('Error syncing data:', error)
         }
     }
 
@@ -102,7 +96,7 @@ function App() {
             setAuthenticated(true)
             journal.map((item) => {return {...item, email : userEmail}})
         }
-        else {setAuthenticated(false), console.log('unauthenticatde user')}
+        else setAuthenticated(false)
     }, [isAuthenticated, journal])
 
     useEffect(() => {
