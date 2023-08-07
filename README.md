@@ -50,3 +50,5 @@ be accessed on other devices).
 
 - Flight notifications
 - Historical flight lookup
+
+ [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
