@@ -88,7 +88,7 @@ export default function FlightCard({ data, departure, destination, refresh,
         const checkInJournal = journal.filter((item) => (item.id === data.id))
         if (checkInJournal.length == 0) setInJournal(false)
         else setInJournal(true)
-    }, [journal])
+    }, [journal, loading])
     /* useEffect(() => {
          (journal)
         syncData()
