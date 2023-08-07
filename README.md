@@ -10,28 +10,28 @@ Use it here: https://www.skyjournaltool.com/
 1.
 Search for a flight by its three-letter airline code, flight number,
 and IATA departure and arrival codes. 
-![Search example](frontend/flight_tracker/assets/search-example.png)
+![Search example](assets/search-example.png)
 
 2a.
 If a live flight is found, you'll see its information card. Click the 'plus'
 button to add it to your journal. Click the 'refresh' button to update the information
 card. The bell icon toggles notifications (to be enabled in a future update).
-![Flight card information](frontend/flight_tracker/assets/flight-card.png)
+![Flight card information](assets/flight-card.png)
 
 2b.
 If a live flight is not found, you will be prompted to enter its information
 manually or start a new search. 
-![Flight info entry fields](frontend/flight_tracker/assets/manual-flight-info.png)
+![Flight info entry fields](assets/manual-flight-info.png)
 
 3.
 View logged flights in your journal map, as well as cumulative flight statistics.
-![Journal map](frontend/flight_tracker/assets/journal.png)
+![Journal map](assets/journal.png)
 
 4.
 Sign in or sign up to backup your data. If you don't sign in, your data will
 persist across browser refreshes and restarts, but may be erased (and cannot
 be accessed on other devices).
-![Sky Journal auth](frontend/flight_tracker/assets/auth0.png)
+![Sky Journal auth](assets/auth0.png)
 
 ## Attributions
 
