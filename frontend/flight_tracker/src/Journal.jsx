@@ -65,10 +65,6 @@ export default function Journal({ authenticated, journal, setJournal,
         const month = parseInt(dateArray[1], 10)
         const day = parseInt(dateArray[2], 10)
 
-         (month)
-         (day)
-         (year)
-
         const formattedMonth = month.toString()
         const formattedDay = day.toString()
 
