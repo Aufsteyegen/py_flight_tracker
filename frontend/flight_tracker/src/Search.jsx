@@ -52,7 +52,7 @@ export default function Search({ departure, setDeparture,
                                                         departure={departure}
                                                         destination={destination} authenticated={authenticated}
                                                         refresh={handleSubmit}
-                                                        setLoading={setLoading}
+                                                        setLoading={setLoading} loading={loading}
                                                         setInJournal={setInJournal} inJournal={inJournal}
                                                         journal={journal} setJournal={setJournal}
                                                         setError={setError} setFetched={setFetched}

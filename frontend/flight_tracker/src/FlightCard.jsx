@@ -7,7 +7,7 @@ import axios from 'axios'
 
 mapboxgl.accessToken = import.meta.env.VITE_mapboxglAccessToken
 
-export default function FlightCard({ data, departure, destination, refresh, 
+export default function FlightCard({ data, departure, destination, refresh, loading, 
                                      setLoading, authenticated, journal, setJournal,
                                      inJournal, setInJournal, setData, setError,
                                      setFetched, setDeparture, setDestination,
