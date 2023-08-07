@@ -11,9 +11,7 @@ export default function FlightCard({ data, departure, destination, refresh, load
                                      setLoading, authenticated, journal, setJournal,
                                      inJournal, setInJournal, setData, setError,
                                      setFetched, setDeparture, setDestination,
-                                     setAirline, setFlightNumber, email,
-                                     trackingFlight, setTrackingFlight,
-                                     syncData  }) {
+                                     setAirline, setFlightNumber, email }) {
     const mapContainer2 = useRef(null)
     const map = useRef(null)
     const [notifications, setNotifications] = useState(false)
@@ -124,12 +122,11 @@ export default function FlightCard({ data, departure, destination, refresh, load
       useEffect(() => {
         const fetchData = async () => {
           try {
-            const syncedData = await axios.put(`https://skyjournalapi.app/update/sync_flights`, {
-              params: postgresItem,
+            await axios.put(`https://skyjournalapi.app/update/sync_flights`, {
+                             params: postgresItem,
             })
-             (syncedData)
           } catch (error) {
-            if (error.response.data.error !== "Cannot save flight (user not authenticated).") console.error('Error syncing data:', error)
+            console.error('Error syncing data:', error)
           }
         }
         fetchData()

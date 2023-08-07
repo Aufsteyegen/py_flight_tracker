@@ -11,9 +11,9 @@ function App() {
     const [journal, setJournal] = useState([])
     const [email, setEmail] = useState('')
 
-    const { loginWithRedirect, isAuthenticated, logout, user } = useAuth0()
+    const { isAuthenticated, user } = useAuth0()
 
-    function addJournalFlight(array, flightObject, uniqueAttribute) {
+    function addJournalFlight(array, flightObject) {
             /* const flightTime = flightObject.flight_time[0] * 60 + flightObject.flight_time[1]
             const originCoordinates = Object.prototype.hasOwnProperty.call(flightObject, 'origin_coordinates') ? flightObject.origin_coordinates : [0, 0]
             const destinationCoordinates = Object.prototype.hasOwnProperty.call(flightObject, 'destination_coordinates') ? flightObject.destination_coordinates : [0, 0] */
@@ -69,19 +69,17 @@ function App() {
             const syncedData = await axios.put(`https://skyjournalapi.app/update/sync_flights`, { params: syncedJournal })
             //setJournal(syncedData.data)
             // (syncedData.data)
-             (syncedData)
             let syncedItems = []
             //if (journal.length >= 1) syncedItems = [journal]
             syncedData.data.map((item) => {
                 addJournalFlight(syncedItems, item, 'flight_id')
             })
-             (syncedItems, 'items here')
             //if (syncedItems.length > 0) {setJournal(syncedItems)}
             // (syncedItems, typeof syncedItems)
             // ('updated journal', journal, typeof journal)
             setJournal(syncedItems)
         } catch (error) {
-            if (error.response.data.error !== "Cannot save flight (user not authenticated).") console.error('Error syncing data:', error)
+            console.error('Error syncing data:', error)
         }
     }
 

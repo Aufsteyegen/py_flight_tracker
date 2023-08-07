@@ -7,7 +7,7 @@ export default function Search({ departure, setDeparture,
                                  airline, setAirline,
                                  flightNumber, setFlightNumber,
                                  fetched, setFetched,
-                                 tail, setTail, authenticated,
+                                 authenticated,
                                  journal, setJournal, inJournal, setInJournal,
                                  email, trackingFlight, setTrackingFlight,
                                  logFlight, setLogFlight, syncData }) {
