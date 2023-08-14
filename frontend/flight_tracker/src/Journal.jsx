@@ -58,7 +58,7 @@ export default function Journal({ authenticated, journal, setJournal,
         ]       
       }
 
-    function createRecord() {
+    async function createRecord() {
         const dateArray = date.split("-")
 
         const year = parseInt(dateArray[0], 10)
@@ -75,6 +75,8 @@ export default function Journal({ authenticated, journal, setJournal,
             existingData.push(journalItem)
             localStorage.setItem('sky_journal_journal', JSON.stringify(existingData))
         }
+        // get 
+
         const timestamp = new Date()
         const timestampString = timestamp.toISOString()
         const journalItem = {
@@ -213,133 +215,130 @@ export default function Journal({ authenticated, journal, setJournal,
         </div>
         {logFlight && (
         <div className="flex justify-center">
-            <div className="mb-5 bg-electric border border-electric rounded-xl p-3 flex shadow-black shadow-md bg-opacity-20 items-center justify-center">
-                <div className="justify-center items-center flex flex-col">
-                    <div className="flex">
+            <div className="mb-5 bg-electric border border-electric rounded-xl 
+                            p-3 flex flex-col shadow-black shadow-md bg-opacity-20 ">
+                <div className="flex justify-between">
+                    <div className="text-xl"><h2>Enter flight details</h2></div>
                     <div>
+                        <button title="Cancel record creation" 
+                                    className="flex items-center border h-7
+                                            border-electric rounded-xl" onClick={() => setLogFlight(false)}>
+                                    <i className='bx bx-x'></i>
+                        </button>
+                    </div>
+                </div>
+                <div className="justify-center items-center grid grid-cols-3 gap-3">
+                  
+                
                     <div className="flex flex-col">
-                        <div className="mb-2 font-bold text-white">Callsign</div>
+                        <div className="mb-2 mt-3 font-bold text-white">Callsign</div>
                         <input className="font-Inter h-10 font-bold tr-bg 
                                     text-white placeholder-gray-400 
-                                    pl-3 mr-4 border bg-black 
+                                    pl-3 border bg-black 
                                     border-electric w-36 rounded-xl" placeholder="CPA384"
                                     value={callsign} onChange={(e) => {e.target.value.length < 8 ? setCallsign(e.target.value.toUpperCase()) : ''}}
                                     required>
                         </input>
                     </div>
-                    <div className="flex flex-col max-w-min">
-                    <div className="mb-2 font-bold text-white mt-3">Departure</div>
-                    <input className="font-Inter h-10 font-bold tr-bg 
-                                text-white placeholder-gray-400 
-                                pl-3 border bg-black 
-                                border-electric w-36 rounded-xl" placeholder="HKG"
-                            value={departure} onChange={(e) => {e.target.value.length > 3 ? '' : setDeparture(e.target.value.toUpperCase())}}
-                            required>
-                    </input>
-                    </div>
-
-                    
-
                     <div className="flex flex-col">
-                    <div className="mb-2 font-bold text-white mt-3">Equipment</div>
-                    <input className="font-Inter h-10 font-bold tr-bg 
-                                text-white placeholder-gray-400 
-                                pl-3 mr-4 border bg-black 
-                                border-electric w-36 rounded-xl" placeholder="Boeing 777"
-                                value={equipment} onChange={(e) => setEquipment(e.target.value)}
+                        <div className="mb-2 font-bold text-white mt-3">Departure</div>
+                        <input className="font-Inter h-10 font-bold tr-bg 
+                                    text-white placeholder-gray-400 
+                                    pl-3 border bg-black 
+                                    border-electric w-36 rounded-xl" placeholder="HKG"
+                                value={departure} onChange={(e) => {e.target.value.length > 3 ? '' : setDeparture(e.target.value.toUpperCase())}}
                                 required>
-                    </input>
+                        </input>
                     </div>
 
                     <div className="flex flex-col">
-                    <div className="mb-2 font-bold text-white mt-3">Flight time (min)</div>
-                    <input className="font-Inter h-10 font-bold tr-bg 
-                                text-white placeholder-gray-400 
-                                pl-3 border bg-black 
-                                border-electric w-36 rounded-xl" placeholder="731"
-                                value={flightTime} onChange={(e) => {
-                                    const inputNumber = parseFloat(e.target.value)
-                                    if (!isNaN(inputNumber) && Math.abs(inputNumber).toString().length <= 4) {
-                                      setFlightTime(inputNumber)
-                                    } else if (e.target.value === '') {
-                                      setFlightTime('')
-                                    }
-                                  }}
-                                  required>
-                    </input>
-                    </div>
-
-                    </div>
-
-                    <div className="max-w-min">
-                    <div className="flex flex-col max-w-min">
-                    <div className="mb-2 font-bold text-white">Registration</div>
-                    <input className="font-Inter h-10 font-bold tr-bg 
-                                text-white placeholder-gray-400 
-                                pl-3 border bg-black 
-                                border-electric w-36 rounded-xl" placeholder="B-KPZ"
-                                value={tail}
-                                onChange={(e) => {e.target.value.length < 10 ? setTail(e.target.value.toUpperCase()) : ''}}
+                        <div className="mb-2 font-bold text-white mt-3">Arrival</div>
+                        <input className="font-Inter h-10 font-bold tr-bg 
+                                    text-white placeholder-gray-400 
+                                    pl-3 border bg-black 
+                                    border-electric w-36 rounded-xl" placeholder="SFO"
+                                value={destination} onChange={(e) => {e.target.value.length > 3 ? '' : setDestination(e.target.value.toUpperCase())}}
                                 required>
-                    </input>
+                        </input>
                     </div>
-
-                    <div className="flex flex-col max-w-min">
-                    <div className="mb-2 font-bold text-white mt-3">Arrival</div>
-                    <input className="font-Inter h-10 font-bold tr-bg 
-                                text-white placeholder-gray-400 
-                                pl-3 border bg-black 
-                                border-electric w-36 rounded-xl" placeholder="SFO"
-                            value={destination} onChange={(e) => {e.target.value.length > 3 ? '' : setDestination(e.target.value.toUpperCase())}}
-                            required>
-                    </input>
+              
+                    <div className="flex flex-col">
+                        <div className="mb-2 font-bold text-white mt-3">Equipment</div>
+                        <input className="font-Inter h-10 font-bold tr-bg 
+                                    text-white placeholder-gray-400 
+                                    pl-3 border bg-black 
+                                    border-electric w-36 rounded-xl" placeholder="Boeing 777"
+                                    value={equipment} onChange={(e) => setEquipment(e.target.value)}
+                                    required>
+                        </input>
                     </div>
 
                     <div className="flex flex-col">
-                    <div className="mb-2 font-bold text-white mt-3 w-32">Distance (mi)</div>
-                    <input className="font-Inter h-10 font-bold tr-bg 
-                                text-white placeholder-gray-400 
-                                pl-3 border bg-black 
-                                border-electric w-36 rounded-xl" placeholder="7553"
-                                value={distance} onChange={(e) => {
-                                    const inputNumber = parseFloat(e.target.value)
-                                    if (!isNaN(inputNumber) && Math.abs(inputNumber).toString().length <= 5) {
-                                      setDistance(inputNumber)
-                                    } else if (e.target.value === '') {
-                                      setDistance('')
-                                    }
-                                  }}
-                                  required>
-                    </input>
+                        <div className="mb-2 font-bold text-white mt-3">Flight time (min)</div>
+                        <input className="font-Inter h-10 font-bold tr-bg 
+                                    text-white placeholder-gray-400 
+                                    pl-3 border bg-black 
+                                    border-electric w-36 rounded-xl" placeholder="731"
+                                    value={flightTime} onChange={(e) => {
+                                        const inputNumber = parseFloat(e.target.value)
+                                        if (!isNaN(inputNumber) && Math.abs(inputNumber).toString().length <= 4) {
+                                        setFlightTime(inputNumber)
+                                        } else if (e.target.value === '') {
+                                        setFlightTime('')
+                                        }
+                                    }}
+                                    required>
+                        </input>
                     </div>
+                 
                     <div className="flex flex-col">
-                    <div className="mb-2 font-bold text-white mt-3 w-32">Date</div>
-                    <input className="font-Inter h-10 font-bold tr-bg 
-                                text-white placeholder-gray-400 
-                                pl-3 border bg-black 
-                                border-electric rounded-xl w-36" type="date" placeholder="8/1/2023"
-                                required
-                                value={date} onChange={(e) => {setDate(e.target.value)}}>
-                    </input>
+                        <div className="mb-2 mt-3 font-bold text-white">Registration</div>
+                        <input className="font-Inter h-10 font-bold tr-bg 
+                                    text-white placeholder-gray-400 
+                                    pl-3 border bg-black 
+                                    border-electric w-36 rounded-xl" placeholder="B-KPZ"
+                                    value={tail}
+                                    onChange={(e) => {e.target.value.length < 10 ? setTail(e.target.value.toUpperCase()) : ''}}
+                                    required>
+                        </input>
                     </div>
-                    </div>
+                
+                    <div className="flex flex-col">
+                        <div className="mb-2 font-bold text-white mt-3 w-32">Distance (mi)</div>
+                        <input className="font-Inter h-10 font-bold tr-bg 
+                                    text-white placeholder-gray-400 
+                                    pl-3 border bg-black 
+                                    border-electric w-36 rounded-xl" placeholder="7553"
+                                    value={distance} onChange={(e) => {
+                                        const inputNumber = parseFloat(e.target.value)
+                                        if (!isNaN(inputNumber) && Math.abs(inputNumber).toString().length <= 5) {
+                                        setDistance(inputNumber)
+                                        } else if (e.target.value === '') {
+                                        setDistance('')
+                                        }
+                                    }}
+                                    required>
+                        </input>
                     </div>
 
-                    <div>
-                    
-                    
-                    <div className="font-bold flex h-full justify-center items-center max-w-full mt-3">
+                    <div className="flex flex-col">
+                        <div className="mb-2 font-bold text-white mt-3 w-32">Date</div>
+                        <input className="font-Inter h-10 font-bold tr-bg 
+                                    text-white placeholder-gray-400 
+                                    pl-3 border bg-black 
+                                    border-electric rounded-xl w-36" type="date" placeholder="8/1/2023"
+                                    required
+                                    value={date} onChange={(e) => {setDate(e.target.value)}}>
+                        </input>
+                    </div>
+
+                    <div className="mt-auto">
+                    <div className="font-bold flex items-end">
                         <button title="Submit record creation" 
-                                className="flex items-center border 
+                                className="flex items-center border w-full 
                                         border-electric rounded-xl  
-                                        h-7 px-2 py-1 mr-3"
+                                        h-10 px-2 py-1 text-center justify-center"
                                         onClick={createRecord}>Submit
-                        </button>
-                        <button title="Cancel record creation" 
-                                className="flex items-center border 
-                                        border-electric rounded-xl  
-                                        h-7" onClick={() => setLogFlight(false)}>
-                                <i className='bx bx-x'></i>
                         </button>
                     </div>
                     </div>

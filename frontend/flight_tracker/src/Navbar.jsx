@@ -3,8 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react"
 import { useEffect } from 'react'
 
 export default function Navbar({ authenticated, setAuthenticated, journal,
-                                 trackFlight, setTrackFlight,
-                                 email, setEmail, setJournal }) {
+                                 trackFlight, setEmail, setJournal }) {
     const { loginWithRedirect, isAuthenticated, logout, user } = useAuth0()
     useEffect(() => {
         const checkAuth = isAuthenticated
@@ -17,12 +16,20 @@ export default function Navbar({ authenticated, setAuthenticated, journal,
         else setAuthenticated(false)
     }, [isAuthenticated, journal, trackFlight])
     return (
-        <div className="text-sm bg-black flex justify-between border-b border-electric py-4 mb-8 w-1/2 px-5 fixed z-30">
-            <div className="flex items-center font-bold">{typeof user !== 'undefined' ? user.email : 'Not signed in.'}</div>
+        <div className="text-sm bg-black bg-opacity-80 flex justify-between 
+                        border-b border-electric py-4 mb-8 w-1/2 px-5 fixed z-30">
+            <div className="flex items-center font-bold">{typeof user !== 'undefined' 
+                                                          ? user.email : 'Not signed in'}
+            </div>
             {!authenticated && (
                 <div>
-                    <button onClick={() => loginWithRedirect()} className="border border-electric rounded-xl px-2 py-1 mr-2">Log in</button>
-                    <button onClick={() => loginWithRedirect({authorizationParams: { screen_hint: "signup", }})} className="border border-electric rounded-xl px-2 py-1 font-bold">Sign up</button>
+                    <button onClick={() => loginWithRedirect()} className="border 
+                                    border-electric rounded-xl px-2 py-1 mr-2">Log in
+                    </button>
+                    <button onClick={() => loginWithRedirect({authorizationParams: { screen_hint: "signup", }})} 
+                                     className="border border-electric rounded-xl 
+                                     px-2 py-1 font-bold">Sign up
+                    </button>
                 </div>
             )}
             {authenticated && (
@@ -33,7 +40,8 @@ export default function Navbar({ authenticated, setAuthenticated, journal,
                         localStorage.removeItem('sky_journal_journal')
                     }
                     }
-                             className="border border-electric rounded-xl px-2 py-1 mr-2">Log out
+                             className="border border-electric rounded-xl px-2 
+                                        py-1 mr-2">Log out
                     </button>
                 </>
             )}

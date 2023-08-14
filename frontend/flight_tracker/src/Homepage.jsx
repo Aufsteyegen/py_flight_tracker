@@ -1,7 +1,7 @@
 import './index.css'
 import Search from './Search'
 import Journal from './Journal'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 export default function Homepage({ authenticated, journal, setJournal,
                                    trackingFlight, setTrackingFlight,

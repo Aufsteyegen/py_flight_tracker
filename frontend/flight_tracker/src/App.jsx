@@ -1,5 +1,6 @@
 import Homepage from './Homepage'
 import Navbar from './Navbar'
+import Footer from './Footer'
 import './index.css'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
@@ -110,6 +111,7 @@ function App() {
         <Homepage trackingFlight={trackingFlight} setTrackingFlight={setTrackingFlight} 
                   authenticated={authenticated} journal={journal} setJournal={setJournal}
                   email={email} setEmail={setEmail} syncData={syncData}/>
+        <Footer />
     </div>
   )
 }
