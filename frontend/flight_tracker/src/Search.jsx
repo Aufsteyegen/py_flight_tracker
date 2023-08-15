@@ -87,7 +87,7 @@ export default function Search({ departure, setDeparture,
                     <div className="flex">
                     <div>
                         <div className="mb-2 font-bold text-white">Airline code</div>
-                        <input  className="font-Inter h-14 font-bold tr-bg 
+                        <input  className="font-Inter h-12 font-bold tr-bg 
                                         text-white placeholder-gray-400 
                                         py-3 pl-3 mr-4 border bg-black 
                                         border-electric w-32 rounded-xl" 
@@ -102,7 +102,7 @@ export default function Search({ departure, setDeparture,
 
                         <div>
                             <div className="mb-2 font-bold text-white">Flight number</div>
-                            <input  className="font-Inter h-14 font-bold tr-bg 
+                            <input  className="font-Inter h-12 font-bold tr-bg 
                                             text-white placeholder-gray-400 py-3 
                                             pl-3 mr-4 border bg-black 
                                             border-electric w-32 rounded-xl" 
@@ -117,7 +117,7 @@ export default function Search({ departure, setDeparture,
                    
                         <div>
                             <div className="mb-2 font-bold text-white">Departure code</div>
-                            <input className="font-Inter h-14 font-bold tr-bg 
+                            <input className="font-Inter h-12 font-bold tr-bg 
                                             text-white placeholder-gray-400 
                                             py-3 pl-3 mr-4 border bg-black 
                                             border-electric w-32 rounded-xl" 
@@ -132,7 +132,7 @@ export default function Search({ departure, setDeparture,
 
                         <div>
                             <div className="mb-2 font-bold text-white">Arrival code</div>
-                            <input  className="font-bold h-14 tr-bg text-white 
+                            <input  className="font-bold h-12 tr-bg text-white 
                                             placeholder-gray-400 py-3 pl-3 
                                             border bg-black border-electric 
                                             w-32 rounded-xl" name="flight-num" 

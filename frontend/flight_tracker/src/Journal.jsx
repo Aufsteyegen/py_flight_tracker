@@ -1,15 +1,16 @@
 
-import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
+import mapboxgl from 'mapbox-gl'
 import './mapbox-gl.css'
 import JournalCard from './JournalCard'
 import { useRef, useState, useEffect } from 'react'
-import * as turf from '@turf/turf';
+import axios from 'axios'
+import * as turf from '@turf/turf'
 
 mapboxgl.accessToken = import.meta.env.VITE_mapboxglAccessToken
 
 export default function Journal({ authenticated, journal, setJournal,
-                                  email, setEmail, logFlight, setLogFlight,
-                                  syncData }) {
+                                  email, setEmail, logFlight, setLogFlight
+                                }) {
 
     const [flightHours, setFlightHours] = useState(0)
     const [flightMiles, setFlightMiles] = useState(0)
@@ -18,7 +19,6 @@ export default function Journal({ authenticated, journal, setJournal,
     const [tail, setTail] = useState('')
     const [departure, setDeparture] = useState('')
     const [destination, setDestination] = useState('')
-    const [distance, setDistance] = useState('')
     const [equipment, setEquipment] = useState('')
     const [flightTime, setFlightTime] = useState('')
     const [date, setDate] = useState('')
@@ -75,8 +75,12 @@ export default function Journal({ authenticated, journal, setJournal,
             existingData.push(journalItem)
             localStorage.setItem('sky_journal_journal', JSON.stringify(existingData))
         }
-        // get 
-
+        const data = {
+            'departure_airport' : departure,
+            'arrival_airport' : destination
+        }
+        const flightDetails = await axios.get('http://127.0.0.1:8080/airports', { params: data }) 
+        console.log(flightDetails)
         const timestamp = new Date()
         const timestampString = timestamp.toISOString()
         const journalItem = {
@@ -85,9 +89,9 @@ export default function Journal({ authenticated, journal, setJournal,
             destination: destination,
             tail: tail,
             flight_time: [convertedTime[0], convertedTime[1]],
-            origin_coordinates: [0, 0],
-            destination_coordinates: [0, 0],
-            distance: distance,
+            origin_coordinates: flightDetails.data.departure_coordinates,
+            destination_coordinates: flightDetails.data.arrival_coordinates,
+            distance: Math.round(flightDetails.data.distance),
             id: null,
             aircraft: equipment,
             flight_date: `${formattedMonth}/${formattedDay}/${year}`,
@@ -104,7 +108,6 @@ export default function Journal({ authenticated, journal, setJournal,
         setTail('')
         setDeparture('')
         setDestination('')
-        setDistance('')
         setEquipment('')
         setFlightTime('')
         setDate('')
@@ -135,18 +138,18 @@ export default function Journal({ authenticated, journal, setJournal,
             style: 'mapbox://styles/mapbox/dark-v11',
             center: [lng, lat],
             zoom: zoom,
-          })
+        })
       
-          map.current.on('style.load', function () {
+        map.current.on('style.load', function () {
             map.current.addSource('multiple-lines-source', {
               type: 'geojson',
               data: {
                 type: 'FeatureCollection',
                 features: features.flatMap((item) => [item.line, item.startPointFeature, item.endPointFeature]),
               },
-            })
+        })
       
-            map.current.addLayer({
+        map.current.addLayer({
               id: 'multiple-lines-layer',
               type: 'line',
               source: 'multiple-lines-source',
@@ -155,10 +158,10 @@ export default function Journal({ authenticated, journal, setJournal,
                 'line-color': '#00C000',
                 'line-width': 2,
               },
-            })
+        })
       
             // Add circles at the start and end of each line
-            map.current.addLayer({
+        map.current.addLayer({
               id: 'start-point-layer',
               type: 'circle',
               source: 'multiple-lines-source',
@@ -167,9 +170,9 @@ export default function Journal({ authenticated, journal, setJournal,
                 'circle-color': '#ADD8E6',
                 'circle-radius': 4.5,
               },
-            })
+        })
       
-            map.current.addLayer({
+        map.current.addLayer({
               id: 'end-point-layer',
               type: 'circle',
               source: 'multiple-lines-source',
@@ -178,24 +181,22 @@ export default function Journal({ authenticated, journal, setJournal,
                 'circle-color': '#ADD8E6',
                 'circle-radius': 4.5,
               },
-            })
+        })
           })
         } else {
           // wait for map style to be loaded before updating data
-          const waitForStyleLoad = setInterval(() => {
-            if (map.current.isStyleLoaded()) {
-              clearInterval(waitForStyleLoad)
-              map.current.getSource('multiple-lines-source').setData({
-                type: 'FeatureCollection',
-                features: features.flatMap((item) => [item.line, item.startPointFeature, item.endPointFeature]),
-              })
+            const waitForStyleLoad = setInterval(() => {
+                if (map.current.isStyleLoaded()) {
+                    clearInterval(waitForStyleLoad)
+                    map.current.getSource('multiple-lines-source').setData({
+                        type: 'FeatureCollection',
+                        features: features.flatMap((item) => [item.line, item.startPointFeature, item.endPointFeature]),
+                })
             }
           }, 200)
         }
     }, [journal])
-      
-      
-    
+
     useEffect(() => {
         const local_journal = localStorage.getItem('sky_journal_journal')
         if (local_journal != null) {
@@ -227,12 +228,12 @@ export default function Journal({ authenticated, journal, setJournal,
                         </button>
                     </div>
                 </div>
-                <div className="justify-center items-center grid grid-cols-3 gap-3">
+                <div className="justify-center items-center grid grid-cols-4 gap-3">
                   
                 
                     <div className="flex flex-col">
-                        <div className="mb-2 mt-3 font-bold text-white">Callsign</div>
-                        <input className="font-Inter h-10 font-bold tr-bg 
+                        <div className="mb-2 mt-3 font-bold text-white">Callsign<span className="text-red-600">*</span></div>
+                        <input className="font-Inter h-12 font-bold tr-bg 
                                     text-white placeholder-gray-400 
                                     pl-3 border bg-black 
                                     border-electric w-36 rounded-xl" placeholder="CPA384"
@@ -241,8 +242,8 @@ export default function Journal({ authenticated, journal, setJournal,
                         </input>
                     </div>
                     <div className="flex flex-col">
-                        <div className="mb-2 font-bold text-white mt-3">Departure</div>
-                        <input className="font-Inter h-10 font-bold tr-bg 
+                        <div className="mb-2 font-bold text-white mt-3">Departure<span className="text-red-600">*</span></div>
+                        <input className="font-Inter h-12 font-bold tr-bg 
                                     text-white placeholder-gray-400 
                                     pl-3 border bg-black 
                                     border-electric w-36 rounded-xl" placeholder="HKG"
@@ -252,8 +253,8 @@ export default function Journal({ authenticated, journal, setJournal,
                     </div>
 
                     <div className="flex flex-col">
-                        <div className="mb-2 font-bold text-white mt-3">Arrival</div>
-                        <input className="font-Inter h-10 font-bold tr-bg 
+                        <div className="mb-2 font-bold text-white mt-3">Arrival<span className="text-red-600">*</span></div>
+                        <input className="font-Inter h-12 font-bold tr-bg 
                                     text-white placeholder-gray-400 
                                     pl-3 border bg-black 
                                     border-electric w-36 rounded-xl" placeholder="SFO"
@@ -261,10 +262,21 @@ export default function Journal({ authenticated, journal, setJournal,
                                 required>
                         </input>
                     </div>
+
+                    <div className="flex flex-col">
+                        <div className="mb-2 font-bold text-white mt-3 w-32">Date<span className="text-red-600">*</span></div>
+                        <input className="font-Inter h-12 font-bold tr-bg 
+                                    text-white placeholder-gray-400 
+                                    pl-3 border bg-black 
+                                    border-electric rounded-xl w-36" type="date" placeholder="8/1/2023"
+                                    required
+                                    value={date} onChange={(e) => {setDate(e.target.value)}}>
+                        </input>
+                    </div>
               
                     <div className="flex flex-col">
                         <div className="mb-2 font-bold text-white mt-3">Equipment</div>
-                        <input className="font-Inter h-10 font-bold tr-bg 
+                        <input className="font-Inter h-12 font-bold tr-bg 
                                     text-white placeholder-gray-400 
                                     pl-3 border bg-black 
                                     border-electric w-36 rounded-xl" placeholder="Boeing 777"
@@ -275,7 +287,7 @@ export default function Journal({ authenticated, journal, setJournal,
 
                     <div className="flex flex-col">
                         <div className="mb-2 font-bold text-white mt-3">Flight time (min)</div>
-                        <input className="font-Inter h-10 font-bold tr-bg 
+                        <input className="font-Inter h-12 font-bold tr-bg 
                                     text-white placeholder-gray-400 
                                     pl-3 border bg-black 
                                     border-electric w-36 rounded-xl" placeholder="731"
@@ -293,7 +305,7 @@ export default function Journal({ authenticated, journal, setJournal,
                  
                     <div className="flex flex-col">
                         <div className="mb-2 mt-3 font-bold text-white">Registration</div>
-                        <input className="font-Inter h-10 font-bold tr-bg 
+                        <input className="font-Inter h-12 font-bold tr-bg 
                                     text-white placeholder-gray-400 
                                     pl-3 border bg-black 
                                     border-electric w-36 rounded-xl" placeholder="B-KPZ"
@@ -302,43 +314,27 @@ export default function Journal({ authenticated, journal, setJournal,
                                     required>
                         </input>
                     </div>
-                
-                    <div className="flex flex-col">
-                        <div className="mb-2 font-bold text-white mt-3 w-32">Distance (mi)</div>
-                        <input className="font-Inter h-10 font-bold tr-bg 
-                                    text-white placeholder-gray-400 
-                                    pl-3 border bg-black 
-                                    border-electric w-36 rounded-xl" placeholder="7553"
-                                    value={distance} onChange={(e) => {
-                                        const inputNumber = parseFloat(e.target.value)
-                                        if (!isNaN(inputNumber) && Math.abs(inputNumber).toString().length <= 5) {
-                                        setDistance(inputNumber)
-                                        } else if (e.target.value === '') {
-                                        setDistance('')
-                                        }
-                                    }}
-                                    required>
-                        </input>
-                    </div>
-
-                    <div className="flex flex-col">
-                        <div className="mb-2 font-bold text-white mt-3 w-32">Date</div>
-                        <input className="font-Inter h-10 font-bold tr-bg 
-                                    text-white placeholder-gray-400 
-                                    pl-3 border bg-black 
-                                    border-electric rounded-xl w-36" type="date" placeholder="8/1/2023"
-                                    required
-                                    value={date} onChange={(e) => {setDate(e.target.value)}}>
-                        </input>
-                    </div>
 
                     <div className="mt-auto">
                     <div className="font-bold flex items-end">
-                        <button title="Submit record creation" 
-                                className="flex items-center border w-full 
-                                        border-electric rounded-xl  
-                                        h-10 px-2 py-1 text-center justify-center"
-                                        onClick={createRecord}>Submit
+                        <button title="Submit record creation"
+                            id={`${departure.length < 3 || destination.length < 3 ||
+                                   callsign.length < 4 || date.length < 10
+                                   ? 'disabled' : ''}`}
+                            className={`flex items-center border w-full 
+                                        ${departure.length < 3 ||
+                                          destination.length < 3 ||
+                                          callsign.length < 4 || date.length < 10 
+                                          ? 'border-gray-500'
+                                          : 'border-electric'} rounded-xl  
+                                    h-12 px-2 py-1 text-center justify-center`}
+                                    onClick={createRecord}
+                                    disabled={(departure.length < 3 ||
+                                                destination.length < 3 ||
+                                                callsign.length < 4
+                                                || date.length < 10) 
+                                                ? true 
+                                                : false}>Submit
                         </button>
                     </div>
                     </div>
@@ -370,7 +366,6 @@ export default function Journal({ authenticated, journal, setJournal,
                 BETA
             </div>
         </div>
-        <div className="text-sm mb-3">Note: routes added manually aren't yet shown.</div>
         <div ref={mapContainer} className="map cursor-grab"></div>
         </div>
     )
