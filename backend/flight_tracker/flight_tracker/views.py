@@ -1,12 +1,9 @@
 from django.http import JsonResponse, HttpResponseServerError
-from django.views.decorators.csrf import csrf_exempt
-from django.middleware.csrf import get_token
 from geopy import distance
 from FlightRadar24 import FlightRadar24API
 import json
 import time
 
-@csrf_exempt
 def flightradar_api(request):
     """
     Handles HTTP GET request from FlightCard.jsx frontend,
@@ -21,8 +18,6 @@ def flightradar_api(request):
     if request.method == 'GET':
         airline = request.GET.get('airline')
         flight_number = request.GET.get('flight_number')
-        #departure_code = request.GET.get('departure')
-        #arrival_code = request.GET.get('arrival')
     else:
         return JsonResponse({'message': 'Invalid request method.'}, status=405)
 
@@ -85,7 +80,6 @@ def flightradar_api(request):
         return HttpResponseServerError(json.dumps(flight_data), content_type='application/json')
     return JsonResponse(flight_data)
 
-@csrf_exempt
 def get_flight_coords(trail):
     """
     Unpacks trail coordinates for a given flight.
@@ -114,10 +108,12 @@ def get_flight_coords(trail):
 
     return output
 
-@csrf_exempt
-def csrf(request):
-    return JsonResponse({'csrfToken': get_token(request)})
-
-@csrf_exempt
-def ping(request):
-    return JsonResponse({'result': 'OK'})
+def flightradar_api_airports(request):
+    if request.method == 'GET':
+        departure_airport = request.GET.get('departure_airport')
+        arrival_airport = request.GET.get('arrival_airport')
+        airports = FlightRadar24API.get_airports(departure_airport, arrival_airport)
+    else:
+        return JsonResponse({'message': 'Invalid request method.'}, status=405)
+    print(airports)
+    return JsonResponse({'Worked' : 'Worked'})
