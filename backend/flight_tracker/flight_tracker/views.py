@@ -112,8 +112,13 @@ def flightradar_api_airports(request):
     if request.method == 'GET':
         departure_airport = request.GET.get('departure_airport')
         arrival_airport = request.GET.get('arrival_airport')
-        airports = FlightRadar24API.get_airports(departure_airport, arrival_airport)
+        departure_airport_details = FlightRadar24API.get_airport(departure_airport)
+        arrival_airport_details = FlightRadar24API.get_airport(arrival_airport)
     else:
         return JsonResponse({'message': 'Invalid request method.'}, status=405)
-    print(airports)
-    return JsonResponse({'Worked' : 'Worked'})
+    print(departure_airport_details, arrival_airport_details)
+    return_data = {
+        'departure_details' : departure_airport_details,
+        'arrival_details' : arrival_airport_details
+    }
+    return JsonResponse(return_data)
