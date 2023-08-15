@@ -1,6 +1,5 @@
 from pathlib import Path
 from dotenv import load_dotenv
-from corsheaders.defaults import default_headers
 import os
 
 load_dotenv()
@@ -13,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJ_SECRET_KEY')
+SECRET_KEY = os.environ.get('DJ_FLIGHT_TRACKER_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -102,7 +101,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': os.environ.get('SJ_DATABASE_USER'),
         'PASSWORD': os.environ.get('SJ_DATABASE_PASSWORD'),
-        'HOST': os.environ.get('SJ_DATABASE_HOST'),  
+        'HOST': os.environ.get('SJ_DATABASE_HOST'),
         'PORT': '',
     }
 }

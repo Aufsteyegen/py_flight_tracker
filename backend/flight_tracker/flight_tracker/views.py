@@ -1,6 +1,7 @@
 from django.http import JsonResponse, HttpResponseServerError
 from geopy import distance
 from FlightRadar24 import FlightRadar24API
+import math
 import json
 import time
 
@@ -11,7 +12,7 @@ def flightradar_api(request):
     no flight data is found.
 
     Parameters:
-        request: HTTP request 
+        request: HTTP request
     Returns:
         HTTP JsonResponse object
     """
@@ -23,6 +24,7 @@ def flightradar_api(request):
 
     fr_api = FlightRadar24API()
     flight = None
+
     # get all flights for specified airline
     airline_flights = fr_api.get_flights(airline)
     for airline_flight in airline_flights:
@@ -30,8 +32,7 @@ def flightradar_api(request):
             flight = airline_flight
 
     # get flight details
-    # print(flight)
-    if flight != None:
+    if flight is not None:
         flight_details = fr_api.get_flight_details(flight)
         print(flight_details)
         trail = get_flight_coords(flight_details['trail'])
@@ -53,14 +54,17 @@ def flightradar_api(request):
         flight_distance = int(distance.great_circle(origin_coordinates, destination_coordinates).miles)
 
         flight_data = {
-            'callsign': flight_details['identification'].get('callsign', None),
-            'estimated': flight_details['status'].get('text', None),
-            'aircraft': flight_details['aircraft']['model'].get('text', None),
-            'registration': flight_details['aircraft'].get('registration', None),
-            'location': [flight_details['trail'][0].get('lat', None), flight_details['trail'][0].get('lng', None)],
-            'altitude': flight_details['trail'][0].get('alt', None),
-            'heading': flight_details['trail'][0].get('hd', None),
-            'speed': flight_details['trail'][0].get('spd', None),
+            'callsign': flight_details['identification'].get('callsign', ''),
+            'estimated': flight_details['status'].get('text', ''),
+            'aircraft': flight_details['aircraft']['model'].get('text', ''),
+            'registration': flight_details['aircraft'].get('registration', ''),
+            'location': [
+                flight_details['trail'][0].get('lat', 0),
+                flight_details['trail'][0].get('lng', 0)
+            ],
+            'altitude': flight_details['trail'][0].get('alt', -1),
+            'heading': flight_details['trail'][0].get('hd', -1),
+            'speed': flight_details['trail'][0].get('spd', -1),
             'flight_time': (flighttime_hours, flighttime_minutes),
             'trail' : trail,
             'origin_stats': flight_details['airport']['origin'].get('position', None),
@@ -71,8 +75,8 @@ def flightradar_api(request):
             'updated' : formatted_time,
             'id' : flight_details['identification'].get('id', None),
             'flight_distance' : flight_distance,
-            'live_status' : flight_details['status'].get('live', None),
-            'status_text' : flight_details['status'].get('text', None)
+            'live_status' : flight_details['status'].get('live', ''),
+            'status_text' : flight_details['status'].get('text', '')
         }
     else:
         flight_data = {'message' : 'Flight not found.',
@@ -86,7 +90,7 @@ def get_flight_coords(trail):
 
     Parameters:
         trail: Dictionary of coordinates
-    Returns: 
+    Returns:
         Nested list of [lat, lng]
     """
     output = []
@@ -98,7 +102,8 @@ def get_flight_coords(trail):
 
         # adjust longitude if it crosses the antimeridian
         if prev_lng is not None:
-            lng += -360 if lng - prev_lng > 180 else (360 if prev_lng - lng > 180 else 0)
+            lng += -360 if lng - prev_lng > 180 else (360 if prev_lng - lng >
+                                                      180 else 0)
 
         coordinates.append(lng)
         coordinates.append(lat)
@@ -112,13 +117,57 @@ def flightradar_api_airports(request):
     if request.method == 'GET':
         departure_airport = request.GET.get('departure_airport')
         arrival_airport = request.GET.get('arrival_airport')
-        departure_airport_details = FlightRadar24API.get_airport(departure_airport)
-        arrival_airport_details = FlightRadar24API.get_airport(arrival_airport)
+        fr_api = FlightRadar24API()
+        try:
+            departure_airport_details = fr_api.get_airport(departure_airport)
+            arrival_airport_details = fr_api.get_airport(arrival_airport)
+        except:
+            departure_airport_details = [0, 0]
+            arrival_airport_details = [0, 0]
     else:
         return JsonResponse({'message': 'Invalid request method.'}, status=405)
-    print(departure_airport_details, arrival_airport_details)
-    return_data = {
-        'departure_details' : departure_airport_details,
-        'arrival_details' : arrival_airport_details
-    }
+
+    if departure_airport_details == [0, 0] or arrival_airport_details == [0, 0]:
+        return_data = {
+            'departure_coordinates' : [0, 0],
+            'arrival_coordinates' : [0, 0],
+            'distance' : -1
+        }
+    else:
+        return_data = {
+            'departure_coordinates' : [departure_airport_details.longitude,
+                                       departure_airport_details.latitude],
+            'arrival_coordinates' : [arrival_airport_details.longitude,
+                                     arrival_airport_details.latitude],
+            'distance' : haversine_distance(departure_airport_details.latitude,
+                                            departure_airport_details.longitude,
+                                            arrival_airport_details.latitude,
+                                            arrival_airport_details.longitude)
+        }
     return JsonResponse(return_data)
+
+def haversine_distance(lat1, lon1, lat2, lon2):
+    """
+    Calculates the Haversine distance between two points.
+
+    Parameters:
+        lat1, lon1: Latitude and longitude of the first point in degrees.
+        lat2, lon2: Latitude and longitude of the second point in degrees.
+
+    Returns:
+        Distance in miles.
+    """
+    # convert degrees to radians
+    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+
+    # Haversine formula
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    # Earth's radius in miles
+    radius = 3958.8
+
+    distance = radius * c
+    return distance
