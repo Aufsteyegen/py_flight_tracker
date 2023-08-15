@@ -79,7 +79,7 @@ export default function Journal({ authenticated, journal, setJournal,
             'departure_airport' : departure,
             'arrival_airport' : destination
         }
-        const flightDetails = await axios.get('http://127.0.0.1:8080/airports', { params: data }) 
+        const flightDetails = await axios.get('https://skyjournalapi.app/airports', { params: data }) 
         console.log(flightDetails)
         const timestamp = new Date()
         const timestampString = timestamp.toISOString()
