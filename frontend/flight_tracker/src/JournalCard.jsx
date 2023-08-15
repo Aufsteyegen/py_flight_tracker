@@ -8,7 +8,7 @@ axios.defaults.xsrfCookieName = "csrftoken"
 axios.defaults.withCredentials = true
 
 export default function JournalCard({ item, journal, setJournal,
-                                      email, setEmail }) {
+                                      email }) {
                     
     const [confirmDelete, setConfirmDelete] = useState(false)
       
@@ -61,7 +61,6 @@ export default function JournalCard({ item, journal, setJournal,
                         </button>
                         </div>
                     )}
-                    
                 </div>
                 <div className="flex">
                     <div className="text-2xl mr-3">{item.aircraft}</div>
