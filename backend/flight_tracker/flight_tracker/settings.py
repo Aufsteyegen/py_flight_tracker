@@ -25,23 +25,8 @@ ALLOWED_HOSTS = ['frontend-files.d2784ujtzwur8a.amplifyapp.com/',
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = True
-
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1:8000",
-    "http://127.0.0.1:3000",
+CORS_ALLOWED_ORIGINS = [
     "https://www.skyjournaltool.com",
-    "https://skyjournalapi.app",
-    "http://skyjournalapi.app",
-    "https://*.skyjournalapi.app",
-    "http://*.skyjournalapi.app"
-    "https://frontend-files.d2784ujtzwur8a.amplifyapp.com",
-    f"http://{os.environ.get('LIGHTSAIL_IP')}",
-    'https://*.skyjournaltool.com',
-    'http://skyjournaltool.com'
-    'https://*.127.0.0.1'
 ]
 
 # Application definition
