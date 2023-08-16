@@ -40,7 +40,7 @@ export default function Homepage({ authenticated, journal, setJournal,
                 syncData={syncData}
             />
         <div className="text-3xl">Journal</div>
-        <div className="mb-5 text-xl"><h2>View and log past flights.</h2></div>
+        <div className="mb-5 text-xl"><h2>Log past flights.</h2></div>
         <Journal authenticated={authenticated} journal={journal} setJournal={setJournal}
                  email={email} setEmail={setEmail} logFlight={logFlight}
                  setLogFlight={setLogFlight} syncData={syncData} />
