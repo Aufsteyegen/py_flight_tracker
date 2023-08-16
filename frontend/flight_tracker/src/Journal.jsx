@@ -75,12 +75,13 @@ export default function Journal({ authenticated, journal, setJournal,
             existingData.push(journalItem)
             localStorage.setItem('sky_journal_journal', JSON.stringify(existingData))
         }
+
         const data = {
             'departure_airport' : departure,
             'arrival_airport' : destination
         }
-        const flightDetails = await axios.get('http://127.0.0.1:8080/airports', { params: data }) 
-        console.log(flightDetails)
+
+        const flightDetails = await axios.get('https://skyjournalapi.app/airports', { params: data }) 
         const timestamp = new Date()
         const timestampString = timestamp.toISOString()
         const journalItem = {
@@ -112,8 +113,7 @@ export default function Journal({ authenticated, journal, setJournal,
         setFlightTime('')
         setDate('')
     }
-          
-    
+
     useEffect(() => {
         // Helper function to generate LineString feature between origin and destination coordinates
         const generateLine = (origin, destination) => {
@@ -206,16 +206,16 @@ export default function Journal({ authenticated, journal, setJournal,
     }, [])
     return (
         <div>
-        {!authenticated && (
-            <div className="mb-2 flex justify-between">
-                <div>Your data may be erased. Sign in to save it.</div>
-            </div>
-        )}
         <div>
                 <button className="mb-2 border border-electric rounded-xl px-2 py-1 font-bold" onClick={() => setLogFlight(!logFlight)}>Log a flight</button>
         </div>
+        <div className="mb-2 text-xl">
+            <span className="font-bold">{flightHours}</span> hours,  
+            <span className="font-bold"> {flightMiles}</span> miles flown over 
+            <span className="font-bold"> {journal.length}</span> {journal.length != 1 ? 'flights' : 'flight'}
+        </div>
         {logFlight && (
-        <div className="flex justify-center">
+        <div className="flex">
             <div className="mb-5 bg-electric border border-electric rounded-xl 
                             p-3 flex flex-col shadow-black shadow-md bg-opacity-20 ">
                 <div className="flex justify-between">
@@ -344,10 +344,12 @@ export default function Journal({ authenticated, journal, setJournal,
             </div>
         </div>     
         )}
+        {journal.length === 0 && (
+            <div className="mb-5 w-full flex items-center justify-center bg-electric
+                           bg-opacity-20 border border-electric rounded-xl
+                           py-3">Logged flights will appear here.</div>
+        )}
         <div className="mb-5 max-h-80 overflow-y-scroll grid grid-cols-2 gap-4 border-b border-electric">
-            {journal.length === 0 && (
-                <div className="mb-5">You have logged no flights.</div>
-            )}
             {journal.map((item, index) => {
                 return (
                 <JournalCard item={item} journal={journal} setJournal={setJournal} 
@@ -356,16 +358,8 @@ export default function Journal({ authenticated, journal, setJournal,
             )
             })}
         </div>
-        <div className="flex text-2xl mb-3 justify-between">
-            <div><span className="font-bold">{flightHours}</span> hours,  
-                <span className="font-bold"> {flightMiles}</span> miles flown over 
-                <span className="font-bold"> {journal.length}</span> {journal.length != 1 ? 'flights' : 'flight'}
-            </div>
-            
-            <div className="text-sm">
-                BETA
-            </div>
-        </div>
+        <div className="text-3xl">Map</div>
+        <div className="mb-5 text-xl"><h2>View past flights.</h2></div>
         <div ref={mapContainer} className="map cursor-grab"></div>
         </div>
     )

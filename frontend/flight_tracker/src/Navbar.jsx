@@ -18,8 +18,13 @@ export default function Navbar({ authenticated, setAuthenticated, journal,
     return (
         <div className="text-sm bg-black bg-opacity-80 flex justify-between 
                         border-b border-electric py-4 mb-8 w-1/2 px-5 fixed z-30">
-            <div className="flex items-center font-bold">{typeof user !== 'undefined' 
+            <div className="flex">
+            <div className="flex items-center font-bold mr-4">{typeof user !== 'undefined' 
                                                           ? user.email : 'Not signed in'}
+            </div>
+            <div className="flex items-center justify-center">
+                V1.0.5
+            </div>
             </div>
             {!authenticated && (
                 <div>

@@ -1,49 +1,28 @@
-# Sky Journal 1.0.0
+# Sky Journal 1.0.5
 
 ## What is this?
 
-#### A React/Django-based flight logging tool to track live flights, log past flights, and see flight route statistics—all in one place.
+#### A React- and Django-based flight logging tool. Track live flights, log past flights, and see flight route statistics—all in one place.
 
 Use it here: https://www.skyjournaltool.com/
 
 ## Usage
 
-Search for a flight by its three-letter airline code, flight number,
-and IATA departure and arrival codes. 
-<p align="center">
-    <img src="assets/search-example.png" width="400" height="200" />
-</p>
+- Search for a flight by its three-letter airline code, flight number,
+  and IATA departure and arrival codes. 
 
-___
+- If a live flight is found, you'll see its information card. Click the 'plus'
+  button to add it to your journal. Click the 'refresh' button to update the information
+  card. The bell icon toggles notifications (to be enabled in a future update).
 
-If a live flight is found, you'll see its information card. Click the 'plus'
-button to add it to your journal. Click the 'refresh' button to update the information
-card. The bell icon toggles notifications (to be enabled in a future update).
-<p align="center">
-    <img src="assets/flight-card.png" width="400" height="400" />
-</p>
+- If a live flight is not found, you can enter its information
+  manually or start a new search. 
 
-___
+- Map logged flights and cumulative flight statistics in your journal.
 
-If a live flight is not found, you will be prompted to enter its information
-manually or start a new search. 
-
-<p align="center">
-    <img src="assets/manual-flight-info.png" width="400" height="400" />
-</p>
-
-___
-
-View logged flights in your journal map, as well as cumulative flight statistics.
-<p align="center">
-    <img src="assets/journal.png" width="400" height="350" />
-</p>
-
-___
-
-Sign in or sign up to backup your data. If you don't sign in, your data will
-persist across browser refreshes and restarts, but may be erased (and cannot
-be accessed on other devices).
+- Sign in or sign up to back up your data. If you don't, your data will
+  persist across browser refreshes and restarts, but may be erased (and cannot
+  be accessed across devices).
 
 ## Attributions
 
